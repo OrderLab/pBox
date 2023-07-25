@@ -1,0 +1,6 @@
+[submodule "psandbox-kernel"]
+	path = psandbox-kernel
+	url = git@github.com:OrderLab/psandbox-kernel.git
+[submodule "psandbox-userlib"]
+	path = psandbox-userlib
+	url = git@github.com:OrderLab/psandbox-userlib.git
