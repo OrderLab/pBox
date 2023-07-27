@@ -1,0 +1,14 @@
+<html><body>
+
+<h1>It works!!!</h1>
+
+<?php
+    if( $_GET["name"] ) {
+        usleep(1000000); // 1s
+        echo "Welcome ". $_GET['name']. "<br />";
+        exit();
+    }
+    echo phpinfo();
+?>
+
+</body></html>
