@@ -209,7 +209,7 @@ elif [[ $1 == 8 ]]; then
     rm $LOG_DIR/c6/retro.log
     retro 
 elif [[ $1 == 9 ]]; then
-    parties_normal >> $LOG_DIR/c5/parties_baseline.log
+    ${PSP_DIR}/sosp_aec/psandbox_script/postgre_server6.sh
 fi
 pkill postgre
 sleep 10

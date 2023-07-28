@@ -191,7 +191,7 @@ elif [[ $1 == 7 ]]; then
 elif [[ $1 == 8 ]]; then
     psandbox > $LOG_DIR/c4/retro.log
 elif [[ $1 == 9 ]]; then
-    parties_normal > $LOG_DIR/c1/parties_baseline.log
+    ${PSP_DIR}/sosp_aec/psandbox_script/mysql_server4.sh
 fi
 
 mysqladmin -S $PSANDBOX_MYSQL_DIR/mysqld.sock -u root shutdown

@@ -196,9 +196,9 @@ elif [[ $1 == 6 ]]; then
 elif [[ $1 == 7 ]]; then
   parties_normal > $LOG_DIR/c9/parties_baseline.log
 elif [[ $1 == 8 ]]; then
-    psandbox > $LOG_DIR/c9/retro.log
+  psandbox > $LOG_DIR/c9/retro.log
 elif [[ $1 == 9 ]]; then
-    parties_normal >> $LOG_DIR/c5/parties_baseline.log
+  ${PSP_DIR}/sosp_aec/psandbox_script/postgre_server9.sh
 fi
 
 pkill postgre

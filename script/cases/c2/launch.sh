@@ -178,7 +178,9 @@ elif [[ $1 == 7 ]]; then
 elif [[ $1 == 8 ]]; then
     psandbox > $LOG_DIR/c2/retro.log
 elif [[ $1 == 9 ]]; then
-    parties_normal >> $LOG_DIR/c1/parties_baseline.log
+     ${PSP_DIR}/sosp_aec/psandbox_script/mysql_server2.sh
+elif [[ $1 == 10 ]]; then
+     ${PSP_DIR}/sosp_aec/psandbox_script/mysql_server2_interference.sh
 fi
 
 pkill -9 mysqld
