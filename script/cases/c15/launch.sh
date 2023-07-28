@@ -24,6 +24,11 @@ function psandbox {
     pkill httpd
 }
 
+function retro {
+    ab -t 30 -n 50000000 -c 16 http://127.0.0.1:8081/index.html > $LOG_DIR/c15/retro.log
+    pkill httpd
+}
+
 function parties_normal {
     sleep 5
     ab -t 90 -n 50000000 -c 1 http://127.0.0.1:8081/index.html > $LOG_DIR/c15/no_interference_parties.log
@@ -139,7 +144,7 @@ elif [[ $1 == 6 ]]; then
 elif [[ $1 == 7 ]]; then
     parties_normal
 elif [[ $1 == 8 ]]; then
-    psandbox > $LOG_DIR/c15/retro.log
+    retro
 elif [[ $1 == 9 ]]; then
     ${PSP_DIR}/sosp_aec/psandbox_script/varnish_server.sh
 fi

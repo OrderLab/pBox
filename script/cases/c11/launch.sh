@@ -24,7 +24,13 @@ function cgroup {
 function psandbox {
     ssh client1 "$NOISE" > /dev/null 2>&1 &
     ssh client2 "$NOISE" > /dev/null 2>&1 &
-    ab -s 10 -t 90 -n 100000000 -c 10 http://127.0.0.1:8080/index.html > $LOG_DIR/c11/psandbox.logpkil
+    ab -s 10 -t 90 -n 100000000 -c 10 http://127.0.0.1:8080/index.html > $LOG_DIR/c11/psandbox.log
+}
+
+function retro {
+    ssh client1 "$NOISE" > /dev/null 2>&1 &
+    ssh client2 "$NOISE" > /dev/null 2>&1 &
+    ab -s 10 -t 90 -n 100000000 -c 10 http://127.0.0.1:8080/index.html > $LOG_DIR/c11/retro.log
 }
 
 function parties_normal {
@@ -145,7 +151,7 @@ elif [[ $1 == 7 ]]; then
     cp index_parties.html $PSANDBOX_APACHE_DIR/htdocs/index.html
     parties_normal
 elif [[ $1 == 8 ]]; then
-    psandbox > $LOG_DIR/c11/retro.log
+    retro
 elif [[ $1 == 9 ]]; then
     ${PSP_DIR}/sosp_aec/psandbox_script/apache_server.sh
 fi

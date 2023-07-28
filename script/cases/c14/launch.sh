@@ -45,6 +45,15 @@ function psandbox {
     pkill httpd
 }
 
+function retro {
+    echo "start retro"
+    ssh client1 "$NOISE" > /dev/null 2>&1 &
+    ssh client2 "$NOISE" > /dev/null 2>&1 &
+    ssh client3 "$NOISE" > /dev/null 2>&1 &
+    ./victim.sh > $LOG_DIR/c14/retro.log
+    sleep 1
+    pkill httpd
+}
 
 function parties_normal {
     $PSANDBOX_VARNISH_DIR/../httpd/dist/bin/apachectl -k start
@@ -180,7 +189,7 @@ elif [[ $1 == 6 ]]; then
 elif [[ $1 == 7 ]]; then
     parties_normal
 elif [[ $1 == 8 ]]; then
-    psandbox > $LOG_DIR/c14/retro.log
+    retro
 elif [[ $1 == 9 ]]; then
     ${PSP_DIR}/sosp_aec/psandbox_script/varnish_server.sh
 fi

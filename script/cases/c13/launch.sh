@@ -57,6 +57,19 @@ function psandbox {
     ./victim.sh > $LOG_DIR/c13/psandbox.log
 }
 
+function retro {
+    cp php-fpm.conf $PSANDBOX_APACHE_DIR/php/etc/php-fpm.conf
+    $PSANDBOX_APACHE_DIR/php/sbin/php-fpm --fpm-config $PSANDBOX_APACHE_DIR/php/etc/php-fpm.conf
+    apachectl -k start
+    sleep 10
+    ./victim.sh > /dev/null 2>&1
+    echo "start retro"
+    ssh client1 "$NOISE" > /dev/null 2>&1 &
+    ssh client2 "$NOISE" > /dev/null 2>&1 &
+    ssh client3 "$NOISE" > /dev/null 2>&1 &
+    ./victim.sh > $LOG_DIR/c13/retro.log
+}
+
 function parties_normal {
     cp php-fpm_normal.conf $PSANDBOX_APACHE_DIR/php/etc/php-fpm.conf
     $PSANDBOX_APACHE_DIR/php/sbin/php-fpm --fpm-config $PSANDBOX_APACHE_DIR/php/etc/php-fpm.conf
@@ -211,7 +224,7 @@ elif [[ $1 == 6 ]]; then
 elif [[ $1 == 7 ]]; then
     parties_normal
 elif [[ $1 == 8 ]]; then
-    psandbox > $LOG_DIR/c13/retro.log
+    retro
 elif [[ $1 == 9 ]]; then
     ${PSP_DIR}/sosp_aec/psandbox_script/apache_server.sh
 fi
