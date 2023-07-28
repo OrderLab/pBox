@@ -237,7 +237,10 @@ def analyzer_apache(path,file):
         if result:
             n = float(float_regex.search(line).group())
             mean_latencies.append(n)
-    return statistics.mean(mean_latencies)
+    if len(mean_latencies) == 0:
+        return 0
+    else:
+        return statistics.mean(mean_latencies)
 
 def analyzer_memcached(path,file):
     i_file = open(path + "/"+ file, 'r')

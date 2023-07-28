@@ -43,7 +43,7 @@ def plot(args, relative=False, ratio_only=False, show_normal=True, large=True):
     print(df)
     normal = df["w/o interference(ms)"]
     interference = df["with interference(ms)"]
-    psandbox = df["psandbox(ms)"]
+    psandbox = df["pbox(ms)"]
     cgroup = df["cgroup(ms)"]
     # parties = df["parties(ms)"]
     # parties_normal = df["parties(w/o interference)"]
