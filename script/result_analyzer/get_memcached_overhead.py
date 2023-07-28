@@ -67,13 +67,13 @@ def get_result(args):
             if "read" in log:
                 n = int(log.split(".")[0].split("_")[-1])
                 if n == 1:
-                    index = df.loc[df['Setting'] == "s1"].index
+                    index = df.loc[df['setting'] == "s1"].index
                 elif n == 16:
-                    index = df.loc[df['Setting'] == "s2"].index
+                    index = df.loc[df['setting'] == "s2"].index
                 elif n == 32:
-                    index = df.loc[df['Setting'] == "s3"].index
+                    index = df.loc[df['setting'] == "s3"].index
                 elif n == 64:
-                    index = df.loc[df['Setting'] == "s4"].index
+                    index = df.loc[df['setting'] == "s4"].index
                 if "psandbox" in log:
                     print (log)
                     print ("write avg " + str(write_avg))
@@ -91,13 +91,13 @@ def get_result(args):
             else:
                 n = int(log.split(".")[0].split("_")[-1])
                 if n == 1:
-                    index = df.loc[df['Setting'] == "s5"].index
+                    index = df.loc[df['setting'] == "s5"].index
                 elif n == 16:
-                    index = df.loc[df['Setting'] == "s6"].index
+                    index = df.loc[df['setting'] == "s6"].index
                 elif n == 32:
-                    index = df.loc[df['Setting'] == "s7"].index
+                    index = df.loc[df['setting'] == "s7"].index
                 elif n == 64:
-                    index = df.loc[df['Setting'] == "s8"].index
+                    index = df.loc[df['setting'] == "s8"].index
                 if "psandbox" in log:
                     print (log)
                     print ("write avg " + str(write_avg))

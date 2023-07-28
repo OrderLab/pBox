@@ -73,13 +73,13 @@ def get_result(args):
         if result:
             n = int(result.group().split(".")[0].split("_")[1])
             if n == 1:
-                index = df.loc[df['Setting'] == "s1"].index.values.astype(int)[0]
+                index = df.loc[df['setting'] == "s1"].index.values.astype(int)[0]
             elif n == 16:
-                index = df.loc[df['Setting'] == "s2"].index.values.astype(int)[0]
+                index = df.loc[df['setting'] == "s2"].index.values.astype(int)[0]
             elif n == 32:
-                index = df.loc[df['Setting'] == "s3"].index.values.astype(int)[0]
+                index = df.loc[df['setting'] == "s3"].index.values.astype(int)[0]
             elif n == 64:
-                index = df.loc[df['Setting'] == "s4"].index.values.astype(int)[0]
+                index = df.loc[df['setting'] == "s4"].index.values.astype(int)[0]
 
         if psandbox_regex.search(file):
             df.at[index,"psandbox(average)"]= statistics.mean(mean_latencies)

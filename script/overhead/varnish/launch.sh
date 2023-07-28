@@ -14,12 +14,12 @@ if [[ $1 == 0 ]]; then
     cp ../../libpsandbox.so $PSANDBOXDIR/build/libs/libpsandbox.so
 elif [[ $1 == 1 ]]; then
    echo "run psandbox"
-   cp ../../libpsandbox_psandbox.so $PSANDBOXDIR/build/libs/libpsandbox.so
+   cp ../../libpsandbox.so $PSANDBOXDIR/build/libs/libpsandbox.so
 fi
 
 cp httpd.conf $PSANDBOX_VARNISH_DIR/../httpd/dist/conf/
-cp php_wrapper $PSANDBOX_VARNISH_DIR/../httpd/dist/php/bin/php-wrapper
-cp $PSANDBOX_VARNISH_DIR/../httpd/php-7.4.23/php.ini-development $PSANDBOX_VARNISH_DIR/../httpd/dist/php/php.ini
+#cp php_wrapper $PSANDBOX_VARNISH_DIR/../httpd/dist/php/bin/php-wrapper
+#cp $PSANDBOX_VARNISH_DIR/../httpd/php-7.4.23/php.ini-development $PSANDBOX_VARNISH_DIR/../httpd/dist/php/php.ini
 cp index.html $PSANDBOX_VARNISH_DIR/../httpd/dist/htdocs/
 cp 500M.html $PSANDBOX_VARNISH_DIR/../httpd/dist/htdocs/
 mkdir -p $LOG_DIR/varnish
