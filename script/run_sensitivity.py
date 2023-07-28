@@ -15,17 +15,14 @@ def main(args):
             os.system(cmd)
             cmd = "cp -r result/cases/" + dir_name + "/no_psandbox.log result/sensitivity/" + dir_name
             os.system(cmd)
-            if dir_name == "c12":
-                cmd = "cp -r result/cases/" + dir_name + "/no_interference.log result/sensitivity/" + dir_name
-                os.system(cmd)
         cmd = "./script/log_analyzer.py -i result/sensitivity -o result/data/eval_sensitivity.csv -d 2 -t 3"
         os.system(cmd)
     else:
         cmd = "./script/run_experiment.py -i script/sensitivity/c" + str(args.index) + "/  -p 1"
         os.system(cmd)
-        cmd = "./script/log_analyzer.py -i result/cases/c" + str(args.index) +" -o result/data/eval_sensitivity.csv -t 3"
-        os.system(cmd)
         cmd = "cp -r result/cases/c" + str(args.index) + "/no_psandbox.log result/sensitivity/c" + str(args.index)
+        os.system(cmd)
+        cmd = "./script/log_analyzer.py -i result/sensitivity -o result/data/eval_sensitivity.csv -d 2 -t 3"
         os.system(cmd)
 
 

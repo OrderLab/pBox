@@ -154,7 +154,7 @@ This experiment measures the end-to-end throughput of pbox for all five systems 
       ```
     * To run one setting, use `./script/run_mitigate.py -n app_name -t threads -p 0 -r 0`
     * The raw data is in `result/data/` folder. The overall result is `result/data/eval_overhead.csv.` The result for each application is `overhead_appname.csv`
-1. Plot the figure by running the script `./script/sensitivity/plot_eval_overhead.py result/data/eval_overhead.csv -o fig12.eps`
+1. Plot the figure by running the script `./script/overhead/plot_eval_overhead.py result/data/eval_overhead.csv -o fig12.eps`
 1. **Note**: Some test results may differ greatly from the paper's figure due to performance variance. If you encounter the issue, please follow the debugging process above. The command to regenerate data for overhead experiment is `./script/log_analyzer.py -i result/overhead -o result/data/eval_overhead.csv -d 2 -t 7`
 
 
