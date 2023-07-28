@@ -130,6 +130,12 @@ elif [[ $1 == 6 ]]; then
 elif [[ $1 == 7 ]]; then
     echo "run c14 parties baseline"
     cp ../../libpsandbox.so $PSANDBOXDIR/build/libs/libpsandbox.so
+elif [[ $1 == 8 ]]; then
+  echo "run c14 retro"
+  cp ../../libretro.so $PSANDBOXDIR/build/libs/libpsandbox.so
+elif [[ $1 == 9 ]]; then
+  echo "run c14 psp"
+  cp ../../libpsandbox.so $PSANDBOXDIR/build/libs/libpsandbox.so
 fi
 
 cp httpd.conf $PSANDBOX_VARNISH_DIR/../httpd/dist/conf/
@@ -173,6 +179,11 @@ elif [[ $1 == 6 ]]; then
     parties
 elif [[ $1 == 7 ]]; then
     parties_normal
+elif [[ $1 == 8 ]]; then
+    psandbox > $LOG_DIR/c14/retro.log
+elif [[ $1 == 9 ]]; then
+    ${PSP_DIR}/sosp_aec/psandbox_script/varnish_server.sh
 fi
+
 
 sleep 1

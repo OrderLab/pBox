@@ -4,7 +4,7 @@ LOG_DIR="$(pwd)/../../../result/overhead/"
 # change the client_ip in bind to gettpid
 
 function run() {
-   ab -s 10 -t $2 -n 1000000 -c $1 http://127.0.0.1:8081/index.html
+   ab -s 10 -t $2 -n 100000 -c $1 http://127.0.0.1:8081/index.html
 }
  
 

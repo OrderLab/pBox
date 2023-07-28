@@ -76,7 +76,7 @@ elif [[ $1 == 2 ]]; then
    cp ../../libpsandbox.so $PSANDBOXDIR/build/libs/libpsandbox.so
 elif [[ $1 == 3 ]]; then
    echo "run c16 psandbox"
-   cp ../../libpsandbox_psandbox.so $PSANDBOXDIR/build/libs/libpsandbox.so
+   cp ../../libpsandbox.so $PSANDBOXDIR/build/libs/libpsandbox.so
 elif [[ $1 == 6 ]]; then
   echo "run c10 parties"
   sudo cgdelete -g cpuset:/hu_front_1
@@ -94,6 +94,12 @@ elif [[ $1 == 6 ]]; then
   cp ../../libpsandbox.so $PSANDBOXDIR/build/libs/libpsandbox.so
 elif [[ $1 == 7 ]]; then
   echo "run c16 parties baseline"
+  cp ../../libpsandbox.so $PSANDBOXDIR/build/libs/libpsandbox.so
+elif [[ $1 == 8 ]]; then
+  echo "run c16 retro"
+  cp ../../libretro.so $PSANDBOXDIR/build/libs/libpsandbox.so
+elif [[ $1 == 9 ]]; then
+  echo "run c16 psp"
   cp ../../libpsandbox.so $PSANDBOXDIR/build/libs/libpsandbox.so
 elif [[ $1 == 8 ]]; then
   echo "run c16 retro"
@@ -126,7 +132,7 @@ elif [[ $1 == 7 ]]; then
 elif [[ $1 == 8 ]]; then
   interference > $LOG_DIR/c16/retro.log
 elif [[ $1 == 9 ]]; then
-    parties_normal > $LOG_DIR/c5/parties_baseline.log
+  ${PSP_DIR}/sosp_aec/psandbox_script/memcached_server.sh
 fi
 
 pkill memcached

@@ -169,6 +169,7 @@ elif [[ $1 == 9 ]]; then
   cp ../../libpsandbox.so $PSANDBOXDIR/build/libs/libpsandbox.so
 fi
 
+if [[ $1 != 9 ]]; then
 cp gendata.pl $PSANDBOX_POSTGRES_DIR
 cd $PSANDBOX_POSTGRES_DIR && ./gendata.pl
 cd -
@@ -180,6 +181,7 @@ if [[ $0 == 2 ]]; then
     for T in $TLIST; do echo "$T" | sudo tee /sys/fs/cgroup/cpu/cpuback/tasks; done >> /dev/null
 fi
 ./create.sh 
+fi
 if [[ $1 == 1 ]]; then
     #normal >> $LOG_DIR/c6/no_psandbox.log
     rm $LOG_DIR/c6/no_psandbox.log

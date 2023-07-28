@@ -87,7 +87,7 @@ def get_result(args):
             df.at[index,"psandbox(99 per)"]= statistics.mean(ninety_nine_latencies)
         else:
             df.at[index,"w/o psandbox(average)"]= statistics.mean(mean_latencies)
-            df.at[index,"w/o psandbox(99 per)"]= statistics.mean(mean_latencies)
+            df.at[index,"w/o psandbox(99 per)"]= statistics.mean(ninety_nine_latencies)
       
     df.to_csv(args.output,index=False)
 
