@@ -122,7 +122,10 @@ mitigation solutions: cgroup, PARTIES, Retro and DARC. The experiment reproduces
     * The raw data is in `result/data/eval_mitigation.csv.`
  1. Plot the figure by running `./script/cases/plot_eval_mitigation_comparsion.py result/data/eval_mitigation.csv -o fig11_half.eps` 
 
-**Note**: Some test results may differ greatly from the paper's figure, as running one script would cause performance variance. If you encounter the issue, please check the raw data in the `result/data/mitigation_pbox.csv` or `result/data/eval_mitigation.csv.` to find the problematic experiment cases and rerun it instead of rerun the whole experiment.
+**Note**: Some test results may differ greatly from the paper's figure due to the system's performance variance. If you encounter the issue, follow the following debugging process: 
+* Check the raw data in the `result/data/mitigation_pbox.csv` or `result/data/eval_mitigation.csv` to find the problematic data point and its cases number
+* Regenerate data point by running `./script/log_analyzer.py -i result/cases -o result/data/mitigation_pbox.csv -d 2 -t 2` for pbox mitigation experiment or `./script/log_analyzer.py -i result/cases -o result/data/eval_mitigation.csv -d 2 -t 5` for comparison experiment.
+* If the data is still incorrect, rerun the problematic case by running `./script/run_mitigate.py -t 1 -i _case_id_`.
 
 
 ## Running the Sensitivity Experiment for Figure 12 (approximately 2 hours)
@@ -132,7 +135,7 @@ This experiment measures the sensitivity of isolation goals when creating a pbox
     * To run all the cases, use `./script/run_sensitivity.py -i 0`. To specify one case, use `./script/run_mitigate.py -i _case_id_`
     * The raw data is in `result/data/eval_sensitivity.csv`
 1. Plot the figure by running `./script/sensitivity/plot_eval_rule_sensitivity.py result/data/eval_sensitivity.csv -o fig12.eps`
-1. **Note**: Sometimes, the result for some cases may differ from the paper's figure due to performance variance. If you see some case's result is different from the paper's figure, please rerun the specified case instead of rerun the whole experiment.
+1. **Note**: Some cases' results may differ from the paper's figure due to performance variance. If you encounter the issues, follow the debugging process above. The command to regenerate data for sensitivity experiment is `./script/log_analyzer.py -i result/sensitivity -o result/data/eval_sensitivity.csv -d 2 -t 3`
    
 ## Running the Performance Overhead Experiment for Figure 13 (approximately 1.5 hours)
 This experiment measures the end-to-end throughput of pbox for all five systems under the standard workload. The experiment reproduces the result in Figure 13.
@@ -152,6 +155,6 @@ This experiment measures the end-to-end throughput of pbox for all five systems 
     * To run one setting, use `./script/run_mitigate.py -n app_name -t threads -p 0 -r 0`
     * The raw data is in `result/data/` folder. The overall result is `result/data/eval_overhead.csv.` The result for each application is `overhead_appname.csv`
 1. Plot the figure by running the script `./script/sensitivity/plot_eval_overhead.py result/data/eval_overhead.csv -o fig12.eps`
-1. **Note**: Some test results may differ greatly from the paper's figure due to performance variance. If you encounter the issue, please check the raw data in the `result/data/eval_overhead.csv.` to find the problematic setting and rerun it instead of rerun the whole experiment.
+1. **Note**: Some test results may differ greatly from the paper's figure due to performance variance. If you encounter the issue, please follow the debugging process above. The command to regenerate data for overhead experiment is `./script/log_analyzer.py -i result/overhead -o result/data/eval_overhead.csv -d 2 -t 7`
 
 
