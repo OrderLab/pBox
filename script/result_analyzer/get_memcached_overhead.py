@@ -43,8 +43,7 @@ def get_result(args):
                'w/o psandbox(average)':[0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0], 
                'w/o psandbox(99 per)':[0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0],
                'psandbox(average)':[0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0],
-               'psandbox(99 per)':[0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0],
-               'ratio(average)':[0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0]}
+               'psandbox(99 per)':[0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0],}
     df = pd.DataFrame(fields)
     for log in overhead_logs:
         file = args.input + "/" + log
@@ -67,13 +66,13 @@ def get_result(args):
             if "read" in log:
                 n = int(log.split(".")[0].split("_")[-1])
                 if n == 1:
-                    index = df.loc[df['setting'] == "s1"].index
+                    index = df.loc[df['setting'] == "s1"].index.values.astype(int)[0]
                 elif n == 16:
-                    index = df.loc[df['setting'] == "s2"].index
+                    index = df.loc[df['setting'] == "s2"].index.values.astype(int)[0]
                 elif n == 32:
-                    index = df.loc[df['setting'] == "s3"].index
+                    index = df.loc[df['setting'] == "s3"].index.values.astype(int)[0]
                 elif n == 64:
-                    index = df.loc[df['setting'] == "s4"].index
+                    index = df.loc[df['setting'] == "s4"].index.values.astype(int)[0]
                 if "psandbox" in log:
                     print (log)
                     print ("write avg " + str(write_avg))
@@ -91,13 +90,13 @@ def get_result(args):
             else:
                 n = int(log.split(".")[0].split("_")[-1])
                 if n == 1:
-                    index = df.loc[df['setting'] == "s5"].index
+                    index = df.loc[df['setting'] == "s5"].index.values.astype(int)[0]
                 elif n == 16:
-                    index = df.loc[df['setting'] == "s6"].index
+                    index = df.loc[df['setting'] == "s6"].index.values.astype(int)[0]
                 elif n == 32:
-                    index = df.loc[df['setting'] == "s7"].index
+                    index = df.loc[df['setting'] == "s7"].index.values.astype(int)[0]
                 elif n == 64:
-                    index = df.loc[df['setting'] == "s8"].index
+                    index = df.loc[df['setting'] == "s8"].index.values.astype(int)[0]
                 if "psandbox" in log:
                     print (log)
                     print ("write avg " + str(write_avg))
@@ -112,8 +111,6 @@ def get_result(args):
                     print ("--------")
                     df.at[index,"w/o psandbox(average)"] = write_avg*0.9 + read_avg * 0.1
                     df.at[index,"w/o psandbox(99 per)"]= tail_write*0.9 + tail_read * 0.1
-    values = (df["psandbox(average)"] - df["w/o psandbox(average)"]) / df["w/o psandbox(average)"] 
-    df["ratio(average)"] = values
     df.to_csv(args.output, index=False)
 
 if __name__ == "__main__":
