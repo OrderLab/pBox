@@ -13,7 +13,7 @@ def run_pbox(args):
     if args.index == 0:
         cmd = "./script/run_experiment.py -i script/cases/c2/  -p 3"
         os.system(cmd)
-        for index in range(1,11):
+        for index in range(1,17):
             cmd = "./script/run_experiment.py -i script/cases/c" + str(index) + "/  -p 1"
             os.system(cmd)
             cmd = "./script/run_experiment.py -i script/cases/c" + str(index) + "/  -p 2"
@@ -48,7 +48,7 @@ def run_comparsion(args):
         os.system(cmd)
         cmd = "./script/run_experiment.py -i script/cases/c" + str(args.index) + "/  -p 8"
         os.system(cmd)
-    cmd = "./script/log_analyzer.py -i result/cases -o result/data/mitigation_comparsion.csv -d 2 -t 5"
+    cmd = "./script/log_analyzer.py -i result/cases -o result/data/eval_mitigation.csv -d 2 -t 5"
     os.system(cmd)
 
 def main(args):
