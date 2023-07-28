@@ -4,7 +4,7 @@ LOG_DIR="$(pwd)/../../../result/overhead/"
 # change the client_ip in bind to gettpid
 
 function run() {
-   ab -s 10 -t $2 -n 1000000 -c $1 http://128.110.218.66:8080/index.html
+   ab -s 10 -t $2 -n 1000000 -c $1 http://127.0.0.1:8080/index.html
 }
  
 
@@ -19,6 +19,8 @@ fi
 
 cp httpd.conf $PSANDBOX_APACHE_DIR/conf/
 cp index.html $PSANDBOX_APACHE_DIR/htdocs/
+cp php_wrapper $PSANDBOX_APACHE_DIR/php/bin/php-wrapper
+cp $PSANDBOX_APACHE_DIR/../php-7.4.23/php.ini-development $PSANDBOX_APACHE_DIR/php/php.ini
 mkdir -p $LOG_DIR/apache
 apachectl -k start
 

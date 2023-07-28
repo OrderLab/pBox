@@ -24,22 +24,22 @@ elif [[ $1 == 1 ]]; then
    cp ../../libpsandbox_psandbox.so $PSANDBOXDIR/build/libs/libpsandbox.so
 fi
 
-mkdir -p $LOG_DIR/postgres
+mkdir -p $LOG_DIR/postgresql
 postgres -D $PSANDBOX_POSTGRES_DIR/data/ --config-file=$PSANDBOX_POSTGRES_DIR/data/postgresql.conf &
 sleep 5
 
 if [[ $2 == 0 ]]; then
     if [[ $1 == 0 ]]; then
-        write_run $3 $4 $5 > $LOG_DIR/postgres/write_$4.log
+        write_run $3 $4 $5 > $LOG_DIR/postgresql/write_$4.log
     elif [[ $1 == 1 ]]; then
-	write_run $3 $4 $5 > $LOG_DIR/postgres/psandbox_write_$4.log
+	write_run $3 $4 $5 > $LOG_DIR/postgresql/psandbox_write_$4.log
     fi
 elif [[ $2 == 1 ]]; then
     if [[ $1 == 0 ]]; then
-        read_run $3 $4 $5 > $LOG_DIR/postgres/read_$4.log
+        read_run $3 $4 $5 > $LOG_DIR/postgresql/read_$4.log
     elif [[ $1 == 1 ]]; then
-	read_run $3 $4 $5 > $LOG_DIR/postgres/psandbox_read_$4.log
+	read_run $3 $4 $5 > $LOG_DIR/postgresql/psandbox_read_$4.log
     fi
 fi
 pkill -9 postgres
-sleep 5
+sleep 10

@@ -175,16 +175,16 @@ $POSTGRES_SYSBENCH_DIR/bin/sysbench  --pgsql-db=postgres --pgsql-user=$(whoami) 
 $POSTGRES_SYSBENCH_DIR/bin/sysbench  --pgsql-db=postgres --pgsql-user=$(whoami) --tables=1 --table-size=1000 $POSTGRES_SYSBENCH_DIR/share/sysbench/oltp_update_index.lua --report-interval=3 prepare >> /dev/null
 
 if [[ $1 == 1 ]]; then
-  normal >> $LOG_DIR/c8/no_psandbox.log
+  normal > $LOG_DIR/c8/no_psandbox.log
   #normal
 elif [[ $1 == 2 ]]; then
-  cgroup >> $LOG_DIR/c8/cgroup.log
+  cgroup > $LOG_DIR/c8/cgroup.log
   #cgroup
 elif [[ $1 == 3 ]]; then
-  psandbox >> $LOG_DIR/c8/psandbox.log
+  psandbox > $LOG_DIR/c8/psandbox.log
   #psandbox
 elif [[ $1 == 4 ]]; then
-  side >> $LOG_DIR/c8/side_psandbox.log
+  side > $LOG_DIR/c8/side_psandbox.log
   #side
 elif [[ $1 == 5 ]]; then
    no_interference
@@ -194,7 +194,7 @@ elif [[ $1 == 6 ]]; then
   mkdir -p $LOG_DIR/c8/front_2
   parties
 elif [[ $1 == 7 ]]; then
-  parties_normal >> $LOG_DIR/c8/parties_baseline.log
+  parties_normal > $LOG_DIR/c8/parties_baseline.log
 elif [[ $1 == 8 ]]; then
     psandbox > $LOG_DIR/c8/retro.log
 elif [[ $1 == 9 ]]; then

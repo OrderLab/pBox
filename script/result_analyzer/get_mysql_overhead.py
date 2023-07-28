@@ -46,7 +46,7 @@ def get_normal_tps(path,file):
 
 def get_result(args):
     means = []
-    fields = {'Setting':["s1","s2","s3","s4","s5","s6","s7","s8"],
+    fields = {'setting':["s1","s2","s3","s4","s5","s6","s7","s8"],
                'app':["MySQL","MySQL","MySQL","MySQL","MySQL","MySQL","MySQL","MySQL"],
                'w/o psandbox(average)':[0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0], 
                'w/o psandbox(99 per)':[0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0],
@@ -80,54 +80,54 @@ def get_result(args):
         if result:
             n = int(result.group().split(".")[0].split("_")[1])
             if n == 1:
-                index = df.loc[df['Setting'] == "s1"].index.values.astype(int)[0]
+                index = df.loc[df['setting'] == "s1"].index.values.astype(int)[0]
             elif n == 16:
                 for throughput in throughputs:
                     request = request + throughput*step
 
                 if request != 0:
                     mean_latencies = (len(throughputs)*step)*1000/request
-                index = df.loc[df['Setting'] == "s2"].index.values.astype(int)[0]
+                index = df.loc[df['setting'] == "s2"].index.values.astype(int)[0]
             elif n == 32:
                 for throughput in throughputs:
                     request = request + throughput*step
 
                 if request != 0:
                     mean_latencies = (len(throughputs)*step)*1000/request
-                index = df.loc[df['Setting'] == "s3"].index.values.astype(int)[0]
+                index = df.loc[df['setting'] == "s3"].index.values.astype(int)[0]
             elif n == 64:
                 for throughput in throughputs:
                     request = request + throughput*step
 
                 if request != 0:
                     mean_latencies = (len(throughputs)*step)*1000/request
-                index = df.loc[df['Setting'] == "s4"].index.values.astype(int)[0]
+                index = df.loc[df['setting'] == "s4"].index.values.astype(int)[0]
         result = write_regex.search(file)
         if result:
             n = int(result.group().split(".")[0].split("_")[1])
             if n == 1:
-                index = df.loc[df['Setting'] == "s5"].index.values.astype(int)[0]
+                index = df.loc[df['setting'] == "s5"].index.values.astype(int)[0]
             elif n == 16:
                 for throughput in throughputs:
                     request = request + throughput*step
 
                 if request != 0:
                     mean_latencies = (len(throughputs)*step)*1000/request
-                index = df.loc[df['Setting'] == "s6"].index.values.astype(int)[0]
+                index = df.loc[df['setting'] == "s6"].index.values.astype(int)[0]
             elif n == 32:
                 for throughput in throughputs:
                     request = request + throughput*step
 
                 if request != 0:
                     mean_latencies = (len(throughputs)*step)*1000/request
-                index = df.loc[df['Setting'] == "s7"].index.values.astype(int)[0]
+                index = df.loc[df['setting'] == "s7"].index.values.astype(int)[0]
             elif n == 64:
                 for throughput in throughputs:
                     request = request + throughput*step
 
                 if request != 0:
                     mean_latencies = (len(throughputs)*step)*1000/request
-                index = df.loc[df['Setting'] == "s8"].index.values.astype(int)[0]
+                index = df.loc[df['setting'] == "s8"].index.values.astype(int)[0]
 
         if psandbox_regex.search(file):
             df.at[index,"psandbox(average)"]= mean_latencies
@@ -135,7 +135,7 @@ def get_result(args):
         else:
             df.at[index,"w/o psandbox(average)"]= mean_latencies
             df.at[index,"w/o psandbox(99 per)"]= ninety_nine_latencies
-    df.to_csv(args.output, sep=',')
+    df.to_csv(args.output, index=False)
            
 if __name__ == "__main__":
     # execute only if run as a script

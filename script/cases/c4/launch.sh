@@ -165,16 +165,16 @@ fi
 sysbench --mysql-socket=$PSANDBOX_MYSQL_DIR/mysqld.sock --mysql-db=test --tables=1 --table-size=100000 --threads=1 --time=99 $SYSBEN_DIR/oltp_update_index.lua --report-interval=5 cleanup >> /dev/null
 sysbench --mysql-socket=$PSANDBOX_MYSQL_DIR/mysqld.sock --mysql-db=test --tables=1 --table-size=100000 --threads=1 --time=99 $SYSBEN_DIR/oltp_update_index.lua --report-interval=5 prepare >> /dev/null
 if [[ $1 == 1 ]]; then
-    normal >> $LOG_DIR/c4/no_psandbox.log
+    normal > $LOG_DIR/c4/no_psandbox.log
     #normal
 elif [[ $1 == 2 ]]; then
-    cgroup >> $LOG_DIR/c4/cgroup.log
+    cgroup > $LOG_DIR/c4/cgroup.log
     #cgroup
 elif [[ $1 == 3 ]]; then
-    psandbox >> $LOG_DIR/c4/psandbox.log
+    psandbox > $LOG_DIR/c4/psandbox.log
     #psandbox
 elif [[ $1 == 4 ]]; then
-    side >> $LOG_DIR/c4/side_psandbox.log
+    side > $LOG_DIR/c4/side_psandbox.log
     #side
 elif [[ $1 == 5 ]]; then
    no_interference
@@ -187,11 +187,11 @@ elif [[ $1 == 6 ]]; then
     mkdir -p $LOG_DIR/c4/back_1
     parties
 elif [[ $1 == 7 ]]; then
-    parties_normal >> $LOG_DIR/c4/parties_baseline.log
+    parties_normal > $LOG_DIR/c4/parties_baseline.log
 elif [[ $1 == 8 ]]; then
     psandbox > $LOG_DIR/c4/retro.log
 elif [[ $1 == 9 ]]; then
-    parties_normal >> $LOG_DIR/c1/parties_baseline.log
+    parties_normal > $LOG_DIR/c1/parties_baseline.log
 fi
 
 mysqladmin -S $PSANDBOX_MYSQL_DIR/mysqld.sock -u root shutdown

@@ -1,8 +1,8 @@
-#!/bin/sh
+#!/bin/bash
 # Set desired PHP_FCGI_* environment variables.
 # Example:
 # PHP FastCGI processes exit after 500 requests by default.
-PHPRC="/users/gongxini/software/varnish/httpd/dist/php/php.ini"
+PHPRC="~/pbox/software/varnish/httpd/dist/php/php.ini"
 PHP_FCGI_CHILDREN=4
 PHP_FCGI_MAX_REQUESTS=1000
 export PHPRC
@@ -10,4 +10,4 @@ export PHP_FCGI_CHILDREN
 export PHP_FCGI_MAX_REQUESTS
 
 # Replace with the path to your FastCGI-enabled PHP executable
-exec /users/gongxini/software/varnish/httpd/dist/php/bin/php-cgi
+exec ~/pbox/software/varnish/httpd/dist/php/bin/php-cgi

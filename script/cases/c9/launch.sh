@@ -184,7 +184,7 @@ elif [[ $1 == 3 ]]; then
   psandbox > $LOG_DIR/c9/psandbox.log
   #psandbox
 elif [[ $1 == 4 ]]; then
-  side >> $LOG_DIR/c9/side_psandbox.log
+  side > $LOG_DIR/c9/side_psandbox.log
   #side
 elif [[ $1 == 5 ]]; then
   no_interference
@@ -194,7 +194,7 @@ elif [[ $1 == 6 ]]; then
   mkdir -p $LOG_DIR/c9/front_2
   parties
 elif [[ $1 == 7 ]]; then
-  parties_normal >> $LOG_DIR/c9/parties_baseline.log
+  parties_normal > $LOG_DIR/c9/parties_baseline.log
 elif [[ $1 == 8 ]]; then
     psandbox > $LOG_DIR/c9/retro.log
 elif [[ $1 == 9 ]]; then

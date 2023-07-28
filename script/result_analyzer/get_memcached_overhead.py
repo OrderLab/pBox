@@ -38,7 +38,7 @@ write_regex = re.compile(
 
 def get_result(args):
     means = []
-    fields = {'Setting':["s1","s2","s3","s4","s5","s6","s7","s8"],
+    fields = {'setting':["s1","s2","s3","s4","s5","s6","s7","s8"],
                'app':["Memcached","Memcached","Memcached","Memcached","Memcached","Memcached","Memcached","Memcached"],
                'w/o psandbox(average)':[0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0], 
                'w/o psandbox(99 per)':[0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0],
@@ -114,7 +114,7 @@ def get_result(args):
                     df.at[index,"w/o psandbox(99 per)"]= tail_write*0.9 + tail_read * 0.1
     values = (df["psandbox(average)"] - df["w/o psandbox(average)"]) / df["w/o psandbox(average)"] 
     df["ratio(average)"] = values
-    df.to_csv(args.output, sep=',')
+    df.to_csv(args.output, index=False)
 
 if __name__ == "__main__":
     # execute only if run as a script

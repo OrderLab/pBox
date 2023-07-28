@@ -47,7 +47,7 @@ function cgroup {
 }
 
 function psandbox {
-  sysbench --mysql-socket=$PSANDBOX_MYSQL_DIR/mysqld.sock --mysql-db=test --tables=64 --table-size=1000 --threads=64 --time=217 --secondary=on  --percentile=50 $SYSBEN_DIR/oltp_insert.lua --report-interval=10 run &
+  sysbench --mysql-socket=$PSANDBOX_MYSQL_DIR/mysqld.sock --mysql-db=test --tables=64 --table-size=1000 --threads=62 --time=217 --secondary=on  --percentile=50 $SYSBEN_DIR/oltp_insert.lua --report-interval=10 run &
   sleep 60
   echo "interference"
   sleep 90
@@ -153,19 +153,19 @@ if [[ $0 == 2 ]]; then
 fi
 
 if [[ $1 == 1 ]]; then
-  normal >> $LOG_DIR/c2/no_psandbox.log
+  normal > $LOG_DIR/c2/no_psandbox.log
   #normal
 elif [[ $1 == 2 ]]; then
-  cgroup >> $LOG_DIR/c2/cgroup.log
+  cgroup > $LOG_DIR/c2/cgroup.log
   #cgroup
 elif [[ $1 == 3 ]]; then
   sysbench --mysql-socket=$PSANDBOX_MYSQL_DIR/mysqld.sock --mysql-db=test --tables=64 --table-size=1000 --threads=1 --secondary=on $SYSBEN_DIR/oltp_insert.lua cleanup >> /dev/null
   sysbench --mysql-socket=$PSANDBOX_MYSQL_DIR/mysqld.sock --mysql-db=test --tables=64 --table-size=1000 --threads=1 --secondary=on $SYSBEN_DIR/oltp_insert.lua prepare >> /dev/null
   mysqladmin -S $PSANDBOX_MYSQL_DIR/mysqld.sock -u root shutdown
-  cp ../../libpsandbox_psandbox.so $PSANDBOXDIR/build/libs/libpsandbox.so
+  cp ../../libpsandbox.so $PSANDBOXDIR/build/libs/libpsandbox.so
   mysqld --defaults-file=../mysql.cnf &
   sleep 5
-  psandbox >> $LOG_DIR/c2/psandbox.log
+  psandbox > $LOG_DIR/c2/psandbox.log
   #psandbox
 elif [[ $1 == 6 ]]; then
   sysbench --mysql-socket=$PSANDBOX_MYSQL_DIR/mysqld.sock --mysql-db=test --tables=64 --table-size=1000 --threads=1 --secondary=on $SYSBEN_DIR/oltp_insert.lua cleanup >> /dev/null
@@ -174,7 +174,7 @@ elif [[ $1 == 6 ]]; then
   mkdir -p $LOG_DIR/c2/front_2
   parties
 elif [[ $1 == 7 ]]; then
-  parties_normal >> $LOG_DIR/c2/parties_baseline.log
+  parties_normal > $LOG_DIR/c2/parties_baseline.log
 elif [[ $1 == 8 ]]; then
     psandbox > $LOG_DIR/c2/retro.log
 elif [[ $1 == 9 ]]; then

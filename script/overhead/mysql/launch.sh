@@ -39,7 +39,7 @@ if [[ $2 == 0 ]]; then
     fi
 elif [[ $2 == 1 ]]; then
     if [[ $1 == 0 ]]; then
-       	sysbench --mysql-socket=$PSANDBOX_MYSQL_DIR/mysqld.sock --mysql-db=test --tables=64 --table-size=1000 --threads=1 $SYSBEN_DIR/oltp_update_index.lua cleanup >> /dev/null
+        sysbench --mysql-socket=$PSANDBOX_MYSQL_DIR/mysqld.sock --mysql-db=test --tables=64 --table-size=1000 --threads=1 $SYSBEN_DIR/oltp_update_index.lua cleanup >> /dev/null
     	sysbench --mysql-socket=$PSANDBOX_MYSQL_DIR/mysqld.sock --mysql-db=test --tables=64 --table-size=1000 --threads=1 $SYSBEN_DIR/oltp_update_index.lua prepare >> /dev/null
         read_run $3 $4 $5 > $LOG_DIR/mysql/read_$4.log
     elif [[ $1 == 1 ]]; then

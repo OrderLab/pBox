@@ -22,6 +22,7 @@ function normal {
   sleep 90
   echo "interference end" 
   sleep 10
+  pkill back.sh
 }
 
 function cgroup {
@@ -45,6 +46,7 @@ function cgroup {
   sleep 90
   echo "interference end"
   sleep 5
+  pkill back.sh
 }
 
 function psandbox {
@@ -59,6 +61,7 @@ function psandbox {
   sleep 90
   echo "interference end" 
   sleep 10
+  pkill back.sh
 }
 
 
@@ -196,16 +199,16 @@ fi
 sysbench --mysql-socket=$PSANDBOX_MYSQL_DIR/mysqld.sock --mysql-db=test --tables=6 --table-size=1000 --threads=1 --time=70 $SYSBEN_DIR/oltp_point_select.lua --report-interval=3 cleanup >> /dev/null
 sysbench --mysql-socket=$PSANDBOX_MYSQL_DIR/mysqld.sock --mysql-db=test --tables=6 --table-size=1000 --threads=1 --time=70 $SYSBEN_DIR/oltp_point_select.lua --report-interval=3 prepare >> /dev/null
 if [[ $1 == 1 ]]; then
-  normal >> $LOG_DIR/c3/no_psandbox.log
+  normal > $LOG_DIR/c3/no_psandbox.log
   #normal
 elif [[ $1 == 2 ]]; then
-  cgroup >> $LOG_DIR/c3/cgroup.log
+  cgroup > $LOG_DIR/c3/cgroup.log
   #cgroup
 elif [[ $1 == 3 ]]; then
-  psandbox >> $LOG_DIR/c3/psandbox.log
+  psandbox > $LOG_DIR/c3/psandbox.log
   #psandbox
 elif [[ $1 == 4 ]]; then
-  side >> $LOG_DIR/c3/side_psandbox.log
+  side > $LOG_DIR/c3/side_psandbox.log
   #side
 elif [[ $1 == 5 ]]; then
   no_interference
@@ -221,11 +224,11 @@ elif [[ $1 == 6 ]]; then
   done  
   parties
 elif [[ $1 == 7 ]]; then
-  parties_normal >> $LOG_DIR/c3/parties_baseline.log
+  parties_normal > $LOG_DIR/c3/parties_baseline.log
 elif [[ $1 == 8 ]]; then
     psandbox > $LOG_DIR/c3/retro.log
 elif [[ $1 == 9 ]]; then
-    parties_normal >> $LOG_DIR/c1/parties_baseline.log
+    parties_normal > $LOG_DIR/c1/parties_baseline.log
 fi
 
 

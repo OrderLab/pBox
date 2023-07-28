@@ -33,15 +33,15 @@ sleep 5
 
 if [[ $2 == 0 ]]; then
     if [[ $1 == 0 ]]; then
-        write_run $3 >> $LOG_DIR/memcached/write_$3.log
+        write_run $3 > $LOG_DIR/memcached/write_$3.log
     elif [[ $1 == 1 ]]; then
-	write_run $3  >> $LOG_DIR/memcached/psandbox_write_$3.log
+	write_run $3  > $LOG_DIR/memcached/psandbox_write_$3.log
     fi
 elif [[ $2 == 1 ]]; then
     if [[ $1 == 0 ]]; then
-        read_run $3  >> $LOG_DIR/memcached/read_$3.log
+        read_run $3  > $LOG_DIR/memcached/read_$3.log
     elif [[ $1 == 1 ]]; then
-	read_run $3  >> $LOG_DIR/memcached/psandbox_read_$3.log
+	read_run $3  > $LOG_DIR/memcached/psandbox_read_$3.log
     fi
 fi
 

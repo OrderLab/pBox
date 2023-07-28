@@ -48,13 +48,14 @@ psandbox_regex = re.compile(
 # Overhead
 def get_result(args):
     means = []
-    fields = {'Setting':["s1","s2","s3","s4"],
+    fields = {'setting':["s1","s2","s3","s4"],
                'app':["Apache","Apache","Apache","Apache"],
                'w/o psandbox(average)':[0.0,0.0,0.0,0.0], 
                'w/o psandbox(99 per)':[0.0,0.0,0.0,0.0],
                'psandbox(average)':[0.0,0.0,0.0,0.0],
                'psandbox(99 per)':[0.0,0.0,0.0,0.0,]}
     df = pd.DataFrame(fields)
+    
     for log in overhead_logs:
         file = args.input + "/" + log
         mean_latencies = []
@@ -88,7 +89,7 @@ def get_result(args):
             df.at[index,"w/o psandbox(average)"]= statistics.mean(mean_latencies)
             df.at[index,"w/o psandbox(99 per)"]= statistics.mean(mean_latencies)
       
-    df.to_csv(args.output, sep=',')
+    df.to_csv(args.output,index=False)
 
 
 if __name__ == "__main__":

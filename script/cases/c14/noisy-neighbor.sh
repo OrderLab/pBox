@@ -1,5 +1,7 @@
 #!/bin/bash
 
-# This script runs on 5 noisy neighbor machines respectively
-# It runs for a looong time, so after the victim finishes we can stop it
-ab -s 10 -t 110 -c 1 http://128.110.218.63:8081/500MB.html\?name\=a
+ab -s 10 -t 110 -c 1 http://$SERVER_NODE:8081/500M.html
+
+# while true; do
+    # wget -O/dev/null http://$SERVER_NODE:8081/500M.html
+# done

@@ -164,8 +164,12 @@ elif [[ $1 == 9 ]]; then
 fi
 
 mkdir -p $LOG_DIR/c10
+cp gendata.pl $PSANDBOX_POSTGRES_DIR
+cd $PSANDBOX_POSTGRES_DIR && ./gendata.pl
+cd -
 postgres -D $PSANDBOX_POSTGRES_DIR/data/ --config-file=$PSANDBOX_POSTGRES_DIR/data/postgresql.conf &
 sleep 1
+
 if [[ $0 == 2 ]]; then
     TLIST=$(ps -e -T | grep postgre | awk '{print $2}' | sort -h)
     for T in $TLIST; do echo "$T" | sudo tee /sys/fs/cgroup/cpu/cpuback/tasks; done >> /dev/null
@@ -176,16 +180,16 @@ sleep 1
 postgres -D $PSANDBOX_POSTGRES_DIR/data/ --config-file=$PSANDBOX_POSTGRES_DIR/data/postgresql.conf &
 sleep 5
 if [[ $1 == 1 ]]; then
-  normal >> $LOG_DIR/c10/no_psandbox.log
+  normal > $LOG_DIR/c10/no_psandbox.log
   #normal
 elif [[ $1 == 2 ]]; then
-  cgroup >> $LOG_DIR/c10/cgroup.log
+  cgroup > $LOG_DIR/c10/cgroup.log
   #cgroup
 elif [[ $1 == 3 ]]; then
-  psandbox >> $LOG_DIR/c10/psandbox.log
+  psandbox > $LOG_DIR/c10/psandbox.log
   #psandbox
 elif [[ $1 == 4 ]]; then
-  side >> $LOG_DIR/c10/side_psandbox.log
+  side > $LOG_DIR/c10/side_psandbox.log
   #side
 elif [[ $1 == 5 ]]; then
   no_interference
@@ -195,11 +199,11 @@ elif [[ $1 == 6 ]]; then
   mkdir -p $LOG_DIR/c10/front_2
   parties
 elif [[ $1 == 7 ]]; then
-  parties_normal >> $LOG_DIR/c10/parties_baseline.log
+  parties_normal > $LOG_DIR/c10/parties_baseline.log
 elif [[ $1 == 8 ]]; then
     psandbox > $LOG_DIR/c10/retro.log
 elif [[ $1 == 9 ]]; then
-    parties_normal >> $LOG_DIR/c5/parties_baseline.log
+    parties_normal > $LOG_DIR/c5/parties_baseline.log
 fi
 
 pkill postgre

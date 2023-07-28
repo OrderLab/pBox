@@ -5,6 +5,7 @@ import sys
 import os
 import pandas as pd
 import re
+import statistics
 
 parser = argparse.ArgumentParser()
 parser.add_argument('-i','--input', help="path to input file")
@@ -12,9 +13,20 @@ parser.add_argument('-o', '--output', default="./output.csv", help="path to outp
 parser.add_argument('-d','--depth', default = 1 , type=int, help="the depth of the folder for the input dir")
 parser.add_argument('-t','--type', default = 1 , type=int,help="the type of experiment")
 
-sentivity_logs = [
+sensitivity_logs = [
+    'no_psandbox.log',
     'rule_25.log',
-    # 'rule_50.log',
+    'rule_50.log',
+    'rule_75.log',
+    'rule_100.log',
+    'rule_125.log',
+]
+
+sensitivity_apache_logs = [
+    'no_interference.log'
+    'no_psandbox.log',
+    'rule_25.log',
+    'rule_50.log',
     'rule_75.log',
     'rule_100.log',
     'rule_125.log',
@@ -42,6 +54,15 @@ tail_regex = re.compile(
    '[0-9]*\.[0-9]* err/s'
 )
 
+apache_mean_regex = re.compile(
+    'Time per request:       [0-9]*\.[0-9]+ \[ms] ' +
+    '\(mean\)'
+)
+float_regex = re.compile(
+    '[0-9]*\.[0-9]+'
+)
+
+apache_cases = ['c11','c12','c13','c14','c15']
 def get_normal_tps(path,file,type):
     try:
         i_file = open(path + "/"+ file, 'r')
@@ -148,49 +169,99 @@ def taillatency_analyzer(file_name,type):
     
     return [normal_latency,interference_latency]
 
+def analyzer_apache(path,file):
+    i_file = open(path + "/"+ file, 'r')
+    mean_latencies = []
+    for line in i_file:
+        result = apache_mean_regex.search(line)
+        if result:
+            n = float(float_regex.search(line).group())
+            mean_latencies.append(n)
+    return statistics.mean(mean_latencies)
+
 def average_analyzer(args):
-    fields = ['Name', 'w/o interference(ms)', 'with interference(ms)', 'cgroup(ms)','psandbox(ms)'] 
+    fields = ['id','Name', 'w/o interference(ms)', 'with interference(ms)', 'cgroup(ms)','psandbox(ms)'] 
     with open(args.output, 'w') as csvfile: 
         csvwriter = csv.writer(csvfile) 
         csvwriter.writerow(fields) 
         if args.depth == 2:
             for dir_name in os.listdir(args.input):
-                path = args.input + "/" +dir_name
+                path = args.input + "/" + dir_name
                 if os.path.isdir(path):
-                    row = [dir_name]
-                    for file in os.listdir(path):
-                        if (file == "no_psandbox.log"):
-                            normal_latencys = get_normal_tps(path,file,0)
-                            row.insert(1,normal_latencys[0])
-                            row.insert(2,normal_latencys[1])
-                        elif (file == "cgroup.log"):
-                            cgroup_latency = get_normal_tps(path,file,0)
-                            row.insert(3,cgroup_latency[1])
-                        elif (file == "psandbox.log"):
-                            psandbox_latency = get_normal_tps(path,file,0)
-                            row.insert(4,psandbox_latency[1])
+                    id = dir_name[1:]
+                    row = [id,dir_name]
+                    if dir_name in apache_cases:
+                        for file in os.listdir(path):
+                            if file == "no_psandbox.log":
+                                interference_latencys = analyzer_apache(path,file)
+                                row.insert(3,interference_latencys)
+                            elif file == "no_interference.log":
+                                normal_latencys = analyzer_apache(path,file)
+                                row.insert(2,normal_latencys)
+                            elif file == "cgroup.log":
+                                cgroup_latencys = analyzer_apache(path,file)
+                                row.insert(4,cgroup_latencys)
+                            elif file == "psandbox.log":
+                                psandbox_latencys = analyzer_apache(path,file)
+                                row.insert(5,psandbox_latencys)
+                    else:
+                        for file in os.listdir(path):
+                            if (file == "no_psandbox.log"):
+                                if dir_name == "c6":
+                                    normal_latencys = get_normal_tps(path,file,1)
+                                else:
+                                    normal_latencys = get_normal_tps(path,file,0)
+                                # normal_latencys = get_normal_tps(path,file,0)
+                                row.insert(2,normal_latencys[0])
+                                row.insert(3,normal_latencys[1])
+                            elif (file == "cgroup.log"):
+                                if dir_name == "c6":
+                                    cgroup_latency = get_normal_tps(path,file,1)
+                                else:
+                                    cgroup_latency = get_normal_tps(path,file,0)
+                                # cgroup_latency = get_normal_tps(path,file,0)
+                                row.insert(4,cgroup_latency[1])
+                            elif (file == "psandbox.log"):
+                                if dir_name == "c6":
+                                    psandbox_latency = get_normal_tps(path,file,1)
+                                else:
+                                    psandbox_latency = get_normal_tps(path,file,0)
+                                # psandbox_latency = get_normal_tps(path,file,0)
+                                row.insert(5,psandbox_latency[1])
                     csvwriter.writerow(row)
         elif args.depth == 1:
             row = [args.input]
             for file in os.listdir(args.input):
                 if (file == "no_psandbox.log"):
-                    normal_latencys = get_normal_tps(args.input,file,0)
+                    if dir_name == "c6":
+                        normal_latencys = get_normal_tps(args.input,file,1)
+                    else:
+                        normal_latencys = get_normal_tps(args.input,file,0)
+                    # normal_latencys = get_normal_tps(args.input,file,0)
                     #print(args.input  + " : " + str(normal_latencys[0]) + " " +  str(normal_latencys[1]))
-                    row.insert(1,normal_latencys[0])
-                    row.insert(2,normal_latencys[1])
+                    row.insert(2,normal_latencys[0])
+                    row.insert(3,normal_latencys[1])
                 elif (file == "cgroup.log"):
-                    cgroup_latency = get_normal_tps(args.input,file,0)
+                    if dir_name == "c6":
+                        cgroup_latency = get_normal_tps(args.input,file,1)
+                    else:
+                        cgroup_latency = get_normal_tps(args.input,file,0)
+                    # cgroup_latency = get_normal_tps(args.input,file,0)
                     #print(args.input  + " : " + str(cgroup_latency[1]) )
-                    row.insert(3,cgroup_latency[1])
+                    row.insert(4,cgroup_latency[1])
                 elif (file == "psandbox.log"):
-                    psandbox_latency = get_normal_tps(args.input,file,0)
+                    if dir_name == "c6":
+                        psandbox_latency = get_normal_tps(args.input,file,1)
+                    else:
+                        psandbox_latency = get_normal_tps(args.input,file,0)
+                    # psandbox_latency = get_normal_tps(args.input,file,0)
                     #print(args.input  + " : " + str(psandbox_latency[1]))
-                    row.insert(4,psandbox_latency[1])
+                    row.insert(5,psandbox_latency[1])
             csvwriter.writerow(row)
             # print(file + ": " + row)
 
 def retro_analyzer(args):
-    fields = ['Name', 'w/o interference(ms)', 'with interference(ms)', 'retro(ms)'] 
+    fields = ['id','Name', 'w/o interference(ms)', 'with interference(ms)', 'retro(ms)'] 
     with open(args.output, 'w') as csvfile: 
         csvwriter = csv.writer(csvfile) 
         csvwriter.writerow(fields) 
@@ -198,28 +269,57 @@ def retro_analyzer(args):
             for dir_name in os.listdir(args.input):
                 path = args.input + "/" +dir_name
                 if os.path.isdir(path):
-                    row = [dir_name]
-                    for file in os.listdir(path):
-                        if (file == "no_psandbox.log"):
-                            normal_latencys = get_normal_tps(path,file,0)
-                            row.insert(1,normal_latencys[0])
-                            row.insert(2,normal_latencys[1])
-                        elif (file == "retro.log"):
-                            cgroup_latency = get_normal_tps(path,file,0)
-                            row.insert(3,cgroup_latency[1])
+                    id = dir_name[1:]
+                    row = [id,dir_name]
+                    if dir_name in apache_cases:
+                        for file in os.listdir(path):
+                            if file == "no_psandbox.log":
+                                interference_latencys = analyzer_apache(path,file)
+                                row.insert(3,interference_latencys)
+                            elif file == "no_interference.log":
+                                normal_latencys = analyzer_apache(path,file)
+                                row.insert(2,normal_latencys)
+                            elif file == "retro.log":
+                                cgroup_latencys = analyzer_apache(path,file)
+                                row.insert(4,cgroup_latencys)
+                    else:
+                        for file in os.listdir(path):
+                            if (file == "no_psandbox.log"):
+                                if dir_name == "c6":
+                                    normal_latencys = get_normal_tps(path,file,1)
+                                else:
+                                    normal_latencys = get_normal_tps(path,file,0)
+                                # normal_latencys = get_normal_tps(path,file,0)
+                                row.insert(2,normal_latencys[0])
+                                row.insert(3,normal_latencys[1])
+                            elif (file == "retro.log"):
+                                if dir_name == "c6":
+                                    cgroup_latency = get_normal_tps(path,file,1)
+                                else:
+                                    cgroup_latency = get_normal_tps(path,file,0)
+                                # cgroup_latency = get_normal_tps(path,file,0)
+                                row.insert(4,cgroup_latency[1])
                     csvwriter.writerow(row)
         elif args.depth == 1:
-            row = [args.input]
+            row = [1, args.input]
             for file in os.listdir(args.input):
                 if (file == "no_psandbox.log"):
-                    normal_latencys = get_normal_tps(args.input,file,0)
+                    if dir_name == "c6":
+                        cgroup_latency = get_normal_tps(args.input,file,1)
+                    else:
+                        cgroup_latency = get_normal_tps(args.input,file,0)
+                    # normal_latencys = get_normal_tps(args.input,file,0)
                     #print(args.input  + " : " + str(normal_latencys[0]) + " " +  str(normal_latencys[1]))
-                    row.insert(1,normal_latencys[0])
-                    row.insert(2,normal_latencys[1])
+                    row.insert(2,normal_latencys[0])
+                    row.insert(3,normal_latencys[1])
                 elif (file == "retro.log"):
-                    cgroup_latency = get_normal_tps(args.input,file,0)
+                    if dir_name == "c6":
+                        cgroup_latency = get_normal_tps(args.input,file,1)
+                    else:
+                        cgroup_latency = get_normal_tps(args.input,file,0)
+                    # cgroup_latency = get_normal_tps(args.input,file,0)
                     #print(args.input  + " : " + str(cgroup_latency[1]) )
-                    row.insert(3,cgroup_latency[1])
+                    row.insert(4,cgroup_latency[1])
             csvwriter.writerow(row)
             # print(file + ": " + row)
 
@@ -271,7 +371,7 @@ def tail_analyzer(args):
 
 
 def parties_analyzer(args):
-    fields = ['Name', 'w/o interference(ms)', 'with interference(ms)', 'parites(ms)'] 
+    fields = ['id','Name', 'w/o interference(ms)', 'with interference(ms)', 'parites(ms)'] 
     with open(args.output, 'w') as csvfile: 
         csvwriter = csv.writer(csvfile) 
         csvwriter.writerow(fields) 
@@ -279,23 +379,36 @@ def parties_analyzer(args):
             for dir_name in os.listdir(args.input):
                 path = args.input + "/" + dir_name
                 if os.path.isdir(path):
-                    row = [dir_name]
-                    for file_name in os.listdir(path):
-                        if (file_name == "parties_baseline.log"):
-                            if dir_name == "c6":
-                                normal_latencys = get_normal_tps(path,file_name,1)
-                            else:
-                                normal_latencys = get_normal_tps(path,file_name,0)
-                            row.insert(1,normal_latencys[0])
-                            row.insert(2,normal_latencys[1])
-                    if os.path.isdir(path + "/front_1"):
-                        for file_name in os.listdir(path + "/front_1"):
-                            if (file_name == "parties.log"):
+                    id = dir_name[1:]
+                    row = [id,dir_name]
+                    if dir_name in apache_cases:
+                        for file in os.listdir(path):
+                            if file == "no_interference_parties.log":
+                                interference_latencys = analyzer_apache(path,file)
+                                row.insert(3,interference_latencys)
+                            elif file == "no_parties.log":
+                                normal_latencys = analyzer_apache(path,file)
+                                row.insert(2,normal_latencys)
+                            elif file == "parties.log":
+                                cgroup_latencys = analyzer_apache(path,file)
+                                row.insert(4,cgroup_latencys)
+                    else:
+                        for file_name in os.listdir(path):
+                            if (file_name == "parties_baseline.log"):
                                 if dir_name == "c6":
-                                    psandbox_latency = get_normal_tps(path + "/front_1",file_name,1)
+                                    normal_latencys = get_normal_tps(path,file_name,1)
                                 else:
-                                    psandbox_latency = get_normal_tps(path + "/front_1",file_name,0)
-                                row.insert(3,psandbox_latency[1])
+                                    normal_latencys = get_normal_tps(path,file_name,0)
+                                row.insert(2,normal_latencys[0])
+                                row.insert(3,normal_latencys[1])
+                        if os.path.isdir(path + "/front_1"):
+                            for file_name in os.listdir(path + "/front_1"):
+                                if (file_name == "parties.log"):
+                                    if dir_name == "c6":
+                                        psandbox_latency = get_normal_tps(path + "/front_1",file_name,1)
+                                    else:
+                                        psandbox_latency = get_normal_tps(path + "/front_1",file_name,0)
+                                    row.insert(4,psandbox_latency[1])
                     csvwriter.writerow(row)
         elif args.depth == 1:
             row = [args.input]
@@ -320,8 +433,9 @@ def parties_analyzer(args):
             # print(row)
 
 
+
 def sentivity_result(args):
-    fields = ['Case', '25%', '50%', '75%','100%','125%']
+    fields = ['id', 'w/o interference(ms)', 'with interference(ms)','25%', '50%', '75%','100%','125%']
     with open(args.output, 'w') as csvfile: 
         csvwriter = csv.writer(csvfile) 
         csvwriter.writerow(fields) 
@@ -330,9 +444,13 @@ def sentivity_result(args):
                 path = args.input + "/" + dir_name
                 if os.path.isdir(path):
                     row = [dir_name]
-                    for index,file in enumerate(sentivity_logs):
-                        normal_latencys = get_normal_tps(path,file);
-                        row.insert(index+1,normal_latencys[1])
+                    for index,file in enumerate(sensitivity_logs):
+                        normal_latencys = get_normal_tps(path,file,0)
+                        if (file == "no_psandbox.log"):
+                            row.insert(1,normal_latencys[0])
+                            row.insert(2,normal_latencys[1])
+                        else:
+                            row.insert(index+2,normal_latencys[1])
                     csvwriter.writerow(row)
 
 def adaptive_result(args):
@@ -359,12 +477,12 @@ def overhead_analyzer(args):
             cmd = "./script/result_analyzer/get_" + dir_name + "_overhead.py -i result/overhead/" + dir_name + " -o result/data/overhead_" + dir_name + ".csv"
             os.system(cmd)
             
-    fields = ['Setting', 'app','w/o psandbox(average)','w/o psandbox(99 per)','psandbox(average)','psandbox(99 per)']
-    final_df = pd.DataFrame(fields)
+
+    final_df = pd.DataFrame(columns = ['setting', 'app','w/o psandbox(average)','w/o psandbox(99 per)','psandbox(average)','psandbox(99 per)'])
     for dir_name in os.listdir(args.input):
-        path = "result/data/result/data/overhead_" + dir_name + ".csv"
-        df = pd.read_csv(args.input)
-        final_df.append(df)
+        path = "./result/data/overhead_" + dir_name + ".csv"
+        df = pd.read_csv(path)
+        final_df = pd.concat([df, final_df], ignore_index=True, sort=False).reset_index(drop=True)
     final_df.to_csv(args.output, encoding='utf-8', index=False)
 
 
