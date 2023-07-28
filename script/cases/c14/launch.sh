@@ -50,18 +50,18 @@ function parties_normal {
     $PSANDBOX_VARNISH_DIR/../httpd/dist/bin/apachectl -k start
     varnishd -a :8081 -f $PSANDBOX_VARNISH_DIR/../script/default.vcl -s malloc,256m -p thread_pools=1 -p thread_pool_min=1 -p thread_pool_max=100 -p thread_pool_timeout=10
     sleep 20
-    ab -s 100 -t 110 -c 1 http://127.0.0.1:8081/500M.html\?name\=a >> /dev/null &
-    ab -s 100 -t 110 -c 1 http://127.0.0.1:8081/500M.html\?name\=a >> /dev/null &
+    ab -s 100 -t 110 -c 1 http://127.0.0.1:8081/10M.html >> /dev/null &
+    ab -s 100 -t 110 -c 1 http://127.0.0.1:8081/10M.html >> /dev/null &
     ab -s 100 -t 90 -n 100000000 -c 1 http://127.0.0.1:8081/index.html > $LOG_DIR/c14/no_interference_parties.log
     sleep 1
     pkill varnishd
     sleep 5
     varnishd -a :8081 -f $PSANDBOX_VARNISH_DIR/../script/default.vcl -s malloc,256m -p thread_pools=1 -p thread_pool_min=1 -p thread_pool_max=3 -p thread_pool_timeout=10
     sleep 20
-    ab -s 100 -t 110 -c 1 http://127.0.0.1:8081/500M.html\?name\=a >> /dev/null &
+    ab -s 100 -t 110 -c 1 http://127.0.0.1:8081/10M.html >> /dev/null &
     TLIST=$(ps -e -T | grep "varnish" | awk '{print $2}' | sort -h)
     for T in $TLIST; do echo "$T" | sudo tee /sys/fs/cgroup/cpuset/hu_apache_2/tasks; done >> /dev/null
-    ab -s 100 -t 110 -c 1 http://127.0.0.1:8081/500M.html\?name\=a >> /dev/null &
+    ab -s 100 -t 110 -c 1 http://127.0.0.1:8081/10M.html >> /dev/null &
     TLIST=$(ps -e -T | grep "varnish" | awk '{print $2}' | sort -h)
     for T in $TLIST; do echo "$T" | sudo tee /sys/fs/cgroup/cpuset/hu_apache_3/tasks; done >> /dev/null
     ab -s 100 -t 90 -c 1 http://127.0.0.1:8081/index.html > $LOG_DIR/c14/no_parties.log &
@@ -74,10 +74,10 @@ function parties {
     $PSANDBOX_VARNISH_DIR/../httpd/dist/bin/apachectl -k start
     varnishd -a :8081 -f $PSANDBOX_VARNISH_DIR/../script/default.vcl -s malloc,256m -p thread_pools=1 -p thread_pool_min=1 -p thread_pool_max=3 -p thread_pool_timeout=10
     sleep 20
-    ab -s 100 -t 110 -c 1 http://127.0.0.1:8081/500M.html\?name\=a >> /dev/null &
+    ab -s 100 -t 110 -c 1 http://127.0.0.1:8081/10M.html >> /dev/null &
     TLIST=$(ps -e -T | grep "httpd" | awk '{print $2}' | sort -h)
     for T in $TLIST; do echo "$T" | sudo tee /sys/fs/cgroup/cpuset/hu_apache_2/tasks; done >> /dev/null
-    ab -s 100 -t 110 -c 1 http://127.0.0.1:8081/500M.html\?name\=a >> /dev/null &
+    ab -s 100 -t 110 -c 1 http://127.0.0.1:8081/10M.html >> /dev/null &
     TLIST=$(ps -e -T | grep "httpd" | awk '{print $2}' | sort -h)
     for T in $TLIST; do echo "$T" | sudo tee /sys/fs/cgroup/cpuset/hu_apache_3/tasks; done >> /dev/null
     ab -s 100 -t 90 -n 100000000 -c 1 http://127.0.0.1:8081/index.html > $LOG_DIR/c14/parties.log &
@@ -142,7 +142,7 @@ cp httpd.conf $PSANDBOX_VARNISH_DIR/../httpd/dist/conf/
 cp php_wrapper $PSANDBOX_VARNISH_DIR/../httpd/dist/php/bin/php-wrapper
 cp $PSANDBOX_VARNISH_DIR/../httpd/php-7.4.23/php.ini-development $PSANDBOX_VARNISH_DIR/../httpd/dist/php/php.ini
 cp index.html $PSANDBOX_VARNISH_DIR/../httpd/dist/htdocs/
-cp 500M.html $PSANDBOX_VARNISH_DIR/../httpd/dist/htdocs/
+cp 10M.html $PSANDBOX_VARNISH_DIR/../httpd/dist/htdocs/
 mkdir -p $LOG_DIR/c14
 
 
@@ -152,24 +152,24 @@ mkdir -p $LOG_DIR/c14
 
 if [[ $1 == 1 ]]; then
     $PSANDBOX_VARNISH_DIR/../httpd/dist/bin/apachectl -k start
-    varnishd -a :8081 -f $PSANDBOX_VARNISH_DIR/../script/default.vcl -s malloc,512m -p thread_pools=1 -p thread_pool_min=1 -p thread_pool_max=100 -p thread_pool_timeout=10
+    varnishd -a :8081 -f $PSANDBOX_VARNISH_DIR/../script/default.vcl -s malloc,256m -p thread_pools=1 -p thread_pool_min=1 -p thread_pool_max=100 -p thread_pool_timeout=10
     sleep 10
     normal
     pkill varnishd
     pkill httpd
     sleep 20
     $PSANDBOX_VARNISH_DIR/../httpd/dist/bin/apachectl -k start
-    varnishd -a :8081 -f $PSANDBOX_VARNISH_DIR/../script/default.vcl -s malloc,512m -p thread_pools=1 -p thread_pool_min=1 -p thread_pool_max=3 -p thread_pool_timeout=10
+    varnishd -a :8081 -f $PSANDBOX_VARNISH_DIR/../script/default.vcl -s malloc,256m -p thread_pools=1 -p thread_pool_min=1 -p thread_pool_max=3 -p thread_pool_timeout=10
     sleep 10
     interference
 elif [[ $1 == 2 ]]; then
     $PSANDBOX_VARNISH_DIR/../httpd/dist/bin/apachectl -k start
-    varnishd -a :8081 -f $PSANDBOX_VARNISH_DIR/../script/default.vcl -s malloc,512m -p thread_pools=1 -p thread_pool_min=1 -p thread_pool_max=3 -p thread_pool_timeout=10
+    varnishd -a :8081 -f $PSANDBOX_VARNISH_DIR/../script/default.vcl -s malloc,256m -p thread_pools=1 -p thread_pool_min=1 -p thread_pool_max=3 -p thread_pool_timeout=10
     sleep 10
     cgroup
 elif [[ $1 == 3 ]]; then
     $PSANDBOX_VARNISH_DIR/../httpd/dist/bin/apachectl -k start
-    varnishd -a :8081 -f $PSANDBOX_VARNISH_DIR/../script/default.vcl -s malloc,512m -p thread_pools=1 -p thread_pool_min=1 -p thread_pool_max=3 -p thread_pool_timeout=10
+    varnishd -a :8081 -f $PSANDBOX_VARNISH_DIR/../script/default.vcl -s malloc,256m -p thread_pools=1 -p thread_pool_min=1 -p thread_pool_max=3 -p thread_pool_timeout=10
     sleep 10
     psandbox
 elif [[ $1 == 6 ]]; then

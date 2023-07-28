@@ -49,6 +49,7 @@ function psandbox {
     $PSANDBOX_APACHE_DIR/php/sbin/php-fpm --fpm-config $PSANDBOX_APACHE_DIR/php/etc/php-fpm.conf
     apachectl -k start
     sleep 10
+    ./victim.sh > /dev/null 2>&1
     echo "start psandbox"
     ssh client1 "$NOISE" > /dev/null 2>&1 &
     ssh client2 "$NOISE" > /dev/null 2>&1 &
