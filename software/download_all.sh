@@ -10,4 +10,4 @@ git clone https://github.com/OrderLab/perfIsolation-PostgreSQL.git postgresql
 git clone https://github.com/OrderLab/perfIsolation-memcached.git memcached
 git clone https://github.com/OrderLab/perfIsolation-Apache.git apache
 git clone https://github.com/OrderLab/perfIsolation-varnish.git varnish
-git clone https://github.com/gongxini/psp-psandbox.git psp_server
+git clone --recursive https://github.com/gongxini/psp-psandbox.git psp_server
