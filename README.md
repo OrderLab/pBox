@@ -35,29 +35,38 @@ scope of isolation.  Figure 8 in the paper shows an example of how the developer
 After the instrumentation, the application just runs as normally, and pbox would automatically mitigate performance 
 interference, which the end-to-end performance can observe.
 
-## Getting Started & Installing pBox Kernel (30 human-minutes + 40 compute-minutes)
+## Requirements
 
 pBox can be used in recent Linux systems (tested on Debian 10.9, Ubuntu 18.04, and Ubuntu 20.04). For development and exploration of pBox, we recommend the usage of a VM or QEMU. For performance measurements, pBox should be used in a physical machine.
 
-To ensure consistency for the artifact evaluation, the following instructions describe how to use pBox on a physical node in CloudLab. We will use **Utah xl170** machines in CloudLab. Please make sure that some nodes are [available](https://www.cloudlab.us/resinfo.php) before you start.
+To ensure consistency for the artifact evaluation, we run pBox on **physical nodes in CloudLab**. The following instructions describe the usage for this environment.
+
+**Hardware:** 
+
+* The experiments require a total of **four nodes**:
+  * We will use one **Utah xl170** node in CloudLab to run the pBox kernel and applications.
+  * To run the experiments for Apache and Varnish, we will three additional clients nodes. These nodes can be of any type.
+* Please make sure such four nodes are [available](https://www.cloudlab.us/resinfo.php) before you start.
+
+## Getting Started & Installing pBox Kernel (30 human-minutes + 40 compute-minutes)
 
 1. Instantiate a CloudLab node.
     * [Login to Cloudlab](https://www.cloudlab.us/login.php).
     * Instantiate a node with our [cloudlab profile](https://www.cloudlab.us/p/FailureDetection/pbox).
 
-1. Login to the node using ssh
+2. Login to the node using ssh
 
-1. Create a pBox user account.
+3. Create a pBox user account.
      * run `sudo useradd -m -s $(which bash) -d /data/pbox -G sudo pbox` to create the account
      * run `sudo passwd pbox` to create the password for pbox account
      * Switch to pbox account `sudo su pbox`
      * change into home directory `cd ~`
      * **Note**: you may want to add your ssh public key in pbox user account if you want to ssh to the machine.
 
-1. Clone [pbox](https://github.com/OrderLab/pBox.git) and its submodules.
+4. Clone [pbox](https://github.com/OrderLab/pBox.git) and its submodules.
     * `git clone --recursive https://github.com/OrderLab/pBox.git pbox`
 
-1. Build pBox kernel.
+5. Build pBox kernel.
 
     ```bash
     cd ~/pbox/psandbox-kernel
@@ -67,11 +76,11 @@ To ensure consistency for the artifact evaluation, the following instructions de
     * If successful,  the pBox kernel image (`linux-*-5.4.0-my-k*.deb` files) will be built and installed.
       * **Note**⚠️: the script will ask for your confirmation before installing the pBox kernel, please enter `Y`.
 
-1. Boot the machine to switch to the pBox image.
+6. Boot the machine to switch to the pBox image.
    * `sudo reboot`
    * The machine would choose the pBox image by default
 
-1. Install the pBox user library.
+7. Install the pBox user library.
 
    ```bash
    cd ~/pbox/psandbox-userlib
@@ -82,9 +91,10 @@ To ensure consistency for the artifact evaluation, the following instructions de
    * Set the environment variable by `source ~/.bashrc`
 
 ## Running Basic Microbenchmark Experiment (5 minutes) 
+
 1. Follow the installing the pBox instructions above.
-1. In the `pbox` directory, run the command `./script/run_experiment.py -i script/microbenchmark`. This will run the microbenchmark experiment in Figure 10. Each microbenchmark operation would run 100K times. The raw data should be output in `result/eval_micro.csv`.
-1. Plot the figure by running the `./script/microbenchmark/plot.sh` command. The CloudLab node does not contain GUI environment, so to view the figure, it needs to be copied to your own machine first.
+2. In the `pbox` directory, run the command `./script/run_experiment.py -i script/microbenchmark`. This will run the microbenchmark experiment in Figure 10. Each microbenchmark operation would run 100K times. The raw data should be output in `result/eval_micro.csv`.
+3. Plot the figure by running the `./script/microbenchmark/plot.sh` command. The CloudLab node does not contain GUI environment, so to view the figure, it needs to be copied to your own machine first.
 
 ## Build Applications & Test Frameworks (approximately 30 minutes)
 1. Download and build all applications used for the experiments.
@@ -106,15 +116,15 @@ To ensure consistency for the artifact evaluation, the following instructions de
    
      * **Note**⚠️: important since the previous scripts would update the environment variables in `.bashrc`.
    
-1. Build the benchmark tools for the applications:
+2. Build the benchmark tools for the applications:
    * Source the bash file `source ~/.bashrc`
    * `cd ~/pbox/software`
    * `./compile_benchmark.sh`
    * Source the bash file `source ~/.bashrc`
    
-1. Node setup for Apache and Varnish
-    * For Apache and Varnish experiment, we will create three additional clients node.
-    * Instantiate a node with our [cloudlab profile](https://www.cloudlab.us/p/FailureDetection/client).
+3. Node setup for Apache and Varnish
+    * For Apache and Varnish experiment, we will create three additional clients nodes.
+    * Instantiate the three nodes with our [cloudlab profile](https://www.cloudlab.us/p/FailureDetection/client).
     * In each client machine, run `sudo apt install apache2-utils` to install a benchmarking tool.
     * In the server machine,
         1. set the SSH configuration file(`~/.ssh/config`) with client machine information
@@ -147,7 +157,9 @@ This experiment measures the effectiveness of pBox on 16 cases in paper's table 
     * To run all the cases, use `/script/run_mitigate.py` 
       * To run one case, use `./script/run_mitigate.py -i <case_id>`
     * The raw data will be in `result/data/mitigation_pbox.csv`
-1. Plot the figure by running `./script/cases/plot_eval_mitigation_pbox.py result/data/mitigation_pbox.csv -o fig11_half.pdf`
+
+2. Plot the figure by running `./script/cases/plot_eval_mitigation_pbox.py result/data/mitigation_pbox.csv -o fig11_half.pdf`
+
 ### Running the comparison experiments with Parties and Retro
 
 1. Running the Parties and Retro.
@@ -155,7 +167,7 @@ This experiment measures the effectiveness of pBox on 16 cases in paper's table 
     * To run all the cases, use `/script/run_mitigate.py -t 1`. 
       * To run one case, use `./script/run_mitigate.py -t 1 -i <case_id>`
     * The raw data will be in `result/data/eval_mitigation.csv.`
- 1. Plot the figure by running `./script/cases/plot_eval_mitigation_comparsion.py result/data/eval_mitigation.csv -o fig11_half.pdf` 
+2. Plot the figure by running `./script/cases/plot_eval_mitigation_comparsion.py result/data/eval_mitigation.csv -o fig11_half.pdf` 
 
 **Note**⚠️: Some test results may differ from the paper's figure due to the system's performance variance. If you encounter the issue, try the following debugging process: 
 
@@ -171,9 +183,11 @@ This experiment measures the sensitivity of isolation goals when creating a pbox
     * To run all the cases, use `./script/run_sensitivity.py -i 0`. 
       * To specify one case, use `./script/run_mitigate.py -i <case_id>`
     * The raw data is in `result/data/eval_sensitivity.csv`
-1. Plot the figure by running `./script/sensitivity/plot_eval_rule_sensitivity.py result/data/eval_sensitivity.csv -o fig12.pdf`
-1. **Note**⚠️: Some cases' results may differ from the paper's figure due to performance variance. If you encounter the issues, follow the debugging process above. The command to regenerate data for sensitivity experiment is `./script/log_analyzer.py -i result/sensitivity -o result/data/eval_sensitivity.csv -d 2 -t 3`
+2. Plot the figure by running `./script/sensitivity/plot_eval_rule_sensitivity.py result/data/eval_sensitivity.csv -o fig12.pdf`
+3. **Note**⚠️: Some cases' results may differ from the paper's figure due to performance variance. If you encounter the issues, follow the debugging process above. The command to regenerate data for sensitivity experiment is `./script/log_analyzer.py -i result/sensitivity -o result/data/eval_sensitivity.csv -d 2 -t 3`
+
 ## Running the Performance Overhead Experiment for Figure 13 (approximately 1.5 hours)
+
 This experiment measures the end-to-end throughput of pbox for all five systems under the standard workload. The experiment reproduces the result in Figure 13.
 1. Running the experiment.
     * `cd ~/pbox`
@@ -190,6 +204,5 @@ This experiment measures the end-to-end throughput of pbox for all five systems 
       ```
     * To run one setting, use `./script/run_mitigate.py -n app_name -t threads -p 0 -r 0`
     * The raw data is in `result/data/` folder. The overall result is `result/data/eval_overhead.csv.` The result for each application is `overhead_appname.csv`
-1. Plot the figure by running the script `./script/overhead/plot_eval_overhead.py result/data/eval_overhead.csv -o fig12.pdf`
-1. **Note**⚠️: Some test results may differ greatly from the paper's figure due to performance variance. If you encounter the issue, please follow the debugging process above. The command to regenerate data for overhead experiment is `./script/log_analyzer.py -i result/overhead -o result/data/eval_overhead.csv -d 2 -t 7`
-
+2. Plot the figure by running the script `./script/overhead/plot_eval_overhead.py result/data/eval_overhead.csv -o fig12.pdf`
+3. **Note**⚠️: Some test results may differ greatly from the paper's figure due to performance variance. If you encounter the issue, please follow the debugging process above. The command to regenerate data for overhead experiment is `./script/log_analyzer.py -i result/overhead -o result/data/eval_overhead.csv -d 2 -t 7`
