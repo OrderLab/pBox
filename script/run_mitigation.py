@@ -51,6 +51,8 @@ def run_comparsion(args):
     cmd = "./script/log_analyzer.py -i result/cases -o result/data/eval_mitigation.csv -d 2 -t 5"
     os.system(cmd)
 
+    
+
 def main(args):
     if args.type == 0:
         run_pbox(args)

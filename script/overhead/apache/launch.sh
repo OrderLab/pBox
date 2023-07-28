@@ -14,7 +14,7 @@ if [[ $1 == 0 ]]; then
     cp ../../libpsandbox.so $PSANDBOXDIR/build/libs/libpsandbox.so
 elif [[ $1 == 1 ]]; then
    echo "run psandbox"
-   cp ../../libpsandbox_psandbox.so $PSANDBOXDIR/build/libs/libpsandbox.so
+   cp ../../libpsandbox.so $PSANDBOXDIR/build/libs/libpsandbox.so
 fi
 
 cp httpd.conf $PSANDBOX_APACHE_DIR/conf/
