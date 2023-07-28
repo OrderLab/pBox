@@ -81,24 +81,28 @@ This instruction describes how to use pbox on Cloudlab. We will use Utah xl170 m
    * `cd ~/pbox/software`
    * `./compile_benchmark.sh`
    * Source the bash file `source ~/.bashrc`
-1. Client node setup for Apache and varnish
+1. Node setup for Apache and varnish
     * For Apache and varnish experiment, we will create three additional clients node.
     * Instantiate a node with our [cloudlab profile](https://www.cloudlab.us/p/FailureDetection/client).
-    * In each client machine, run `sudo apt install apache2-utils`
-    * In the server machine, set the SSH configuration file(`~/.ssh/config`) with client machine information.
-        * Example of the config file:
-          ```bash
-          Host client1
-               HostName c220g5-110906.wisc.cloudlab.us
-               User pbox
-          Host client2
-               HostName c220g5-110906.wisc.cloudlab.us
-               User pbox
-          Host client2
-               HostName c220g5-110906.wisc.cloudlab.us
-               User pbox
-           ```
-         * **Note**: the host name must be client1, client2 and client3. A different name would cause failure when running the experiment on Apache and varnish
+    * In each client machine, run `sudo apt install apache2-utils` to install a benchmarking tool.
+    * In the server machine,
+        1. set the SSH configuration file(`~/.ssh/config`) with client machine information
+            * Example of the config file:
+              ```bash
+              Host client1
+                   HostName c220g5-110906.wisc.cloudlab.us
+                   User pbox
+              Host client2
+                   HostName c220g5-110907.wisc.cloudlab.us
+                   User pbox
+              Host client3
+                   HostName c220g5-110908.wisc.cloudlab.us
+                   User pbox
+              ```
+            * **Note**: the host name must be client1, client2 and client3. A different name would cause failure when running the experiment on Apache and varnish.
+        2. set the environment variable `SERVER_NODE` to store the server machine's public IP for clients to connect
+            * Example: `echo 'export SERVER_NODE=c220g5-110990.wisc.cloudlab.us >> ~/.bashrc'`
+            * **Note**: its value is passed remotely to clients. You only need to set it in the server machine.
     
 
 ## Running the mitigation experiment for Figure 11 (30 human minutes and approximately 8 compute hours)
