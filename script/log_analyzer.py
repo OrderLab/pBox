@@ -63,7 +63,117 @@ float_regex = re.compile(
 )
 
 apache_cases = ['c11','c12','c13','c14','c15']
-def get_normal_tps(path,file,type):
+memcached_cases = ['c16']
+logs  = [
+    'cgroup.log', 
+    'no_interference.log', 
+    'no_psandbox.log', 
+    'psandbox.log'
+]
+
+mem_read_regex = re.compile(
+    'read +[0-9]*\.[0-9]+'
+)
+mem_write_regex = re.compile(
+    'update +[0-9]*\.[0-9]+'
+)
+
+# def taillatency_analyzer(file_name,type):
+#     i_file = open(file_name, 'r')
+#     normal_throughputs = []
+#     interference_throughputs = []
+#     normal_flag = False
+#     interference_flag = False
+#     normal_latency = 0.0
+#     normal_request = 0.0
+#     interference_request = 0.0
+#     interference_latency = 0.0
+#     threads = 1
+#     step = 10
+#     for line in i_file.readlines():
+#         curLine=line.strip().split(" ")
+#         if line == "normal\n":
+#             normal_flag = True 
+#         if line == "normal end\n":
+#             normal_flag = False
+
+#         if line == "interference\n":
+#             interference_flag = True
+#         if line == "interference end\n":
+#             interference_flag = False
+
+#         result = thread_regex.search(line)
+#         if result:   
+#             threads = int(result.group().split()[1])
+#             if normal_flag:
+#                 # print(float(tail_regex.search(line).group().split()[0]))
+
+#                 normal_throughputs.append(float(tail_regex.search(line).group().split()[0])/threads)
+#             if interference_flag:
+#                 interference_throughputs.append(float(tail_regex.search(line).group().split()[0])/threads)
+    
+#     for normal_throughput in normal_throughputs:
+#         normal_request = normal_request + normal_throughput
+
+    
+#     if normal_request != 0:
+#         normal_latency = normal_request/ len(normal_throughputs)
+
+#     for interference_throughput in interference_throughputs:
+#         interference_request = interference_request + interference_throughput
+
+#     if interference_request != 0:
+#         interference_latency = interference_request/len(interference_throughputs)
+    
+#     return [normal_latency,interference_latency]
+
+# def tail_analyzer(args):
+#     fields = ['Name', 'w/o interference(ms)', 'with interference(ms)', 'cgroup(ms)','pbox(ms)'] 
+#     with open(args.output, 'w') as csvfile: 
+#         csvwriter = csv.writer(csvfile) 
+#         csvwriter.writerow(fields) 
+#         if args.depth == 2:
+#             for dir_name in os.listdir(args.input):
+#                 path = args.input + "/" + dir_name
+#                 if os.path.isdir(path):
+#                     row = [dir_name]
+#                     for file_name in os.listdir(path):
+#                         if (file_name == "no_psandbox.log"):
+#                             normal_latencys = taillatency_analyzer(path + "/"+ file_name,0)
+#                             row.insert(1,normal_latencys[0])
+#                             row.insert(2,normal_latencys[1])
+#                         elif (file_name == "cgroup.log"):
+#                             cgroup_latency = taillatency_analyzer(path + "/"+ file_name,0)
+#                             row.insert(3,cgroup_latency[1])
+#                         elif (file_name == "psandbox.log"):
+#                             psandbox_latency = taillatency_analyzer(path + "/"+ file_name,0);
+#                             row.insert(4,psandbox_latency[1])
+#                         elif (fine_name == "parties.log"):
+#                             psandbox_latency = taillatency_analyzer(path + "/"+ file_name,0);
+#                             row.insert(4,psandbox_latency[1])
+#                     csvwriter.writerow(row)
+#         elif args.depth == 1:
+#             row = [args.input]
+#             for file in os.listdir(args.input):
+#                 if (file == "no_psandbox.log"):
+#                     normal_latencys = taillatency_analyzer(args.input+ "/"+  file,0)
+#                     print(args.input  + " : " + str(normal_latencys[0]) + " " +  str(normal_latencys[1]))
+#                     row.insert(1,normal_latencys[0])
+#                     row.insert(2,normal_latencys[1])
+#                 elif (file == "cgroup.log"):
+#                     cgroup_latency = taillatency_analyzer(args.input+ "/"+  file,0)
+#                     row.insert(3,cgroup_latency[1])
+#                 elif (file == "psandbox.log"):
+#                     psandbox_latency = taillatency_analyzer(args.input+ "/"+  file,0)
+#                     row.insert(4,psandbox_latency[1])
+#                 elif (file == "parties.log"):
+#                     psandbox_latency = taillatency_analyzer(path + "/"+ file,0);
+#                     row.insert(4,psandbox_latency[1])
+#             csvwriter.writerow(row)
+#             # print(file + ": " + row)
+
+
+def analyzer_mysql(path,file,type):
     try:
         i_file = open(path + "/"+ file, 'r')
         normal_throughputs = []
@@ -119,56 +229,6 @@ def get_normal_tps(path,file,type):
         return [0,0]
 
    
-
-def taillatency_analyzer(file_name,type):
-    i_file = open(file_name, 'r')
-    normal_throughputs = []
-    interference_throughputs = []
-    normal_flag = False
-    interference_flag = False
-    normal_latency = 0.0
-    normal_request = 0.0
-    interference_request = 0.0
-    interference_latency = 0.0
-    threads = 1
-    step = 10
-    for line in i_file.readlines():
-        curLine=line.strip().split(" ")
-        if line == "normal\n":
-            normal_flag = True 
-        if line == "normal end\n":
-            normal_flag = False
-
-        if line == "interference\n":
-            interference_flag = True
-        if line == "interference end\n":
-            interference_flag = False
-
-        result = thread_regex.search(line)
-        if result:   
-            threads = int(result.group().split()[1])
-            if normal_flag:
-                # print(float(tail_regex.search(line).group().split()[0]))
-
-                normal_throughputs.append(float(tail_regex.search(line).group().split()[0])/threads)
-            if interference_flag:
-                interference_throughputs.append(float(tail_regex.search(line).group().split()[0])/threads)
-    
-    for normal_throughput in normal_throughputs:
-        normal_request = normal_request + normal_throughput
-
-    
-    if normal_request != 0:
-        normal_latency = normal_request/ len(normal_throughputs)
-
-    for interference_throughput in interference_throughputs:
-        interference_request = interference_request + interference_throughput
-
-    if interference_request != 0:
-        interference_latency = interference_request/len(interference_throughputs)
-    
-    return [normal_latency,interference_latency]
-
 def analyzer_apache(path,file):
     i_file = open(path + "/"+ file, 'r')
     mean_latencies = []
@@ -179,8 +239,19 @@ def analyzer_apache(path,file):
             mean_latencies.append(n)
     return statistics.mean(mean_latencies)
 
+def analyzer_memcached(path,file):
+    i_file = open(path + "/"+ file, 'r')
+    for line in i_file:
+        result = read_regex.search(line)
+        if result:
+            read_avg = float(result.group().split()[1])
+        result = write_regex.search(line)
+        if result:
+            write_avg = float(result.group().split()[1])
+    return write_avg*0.1 + read_avg * 0.9
+
 def average_analyzer(args):
-    fields = ['id','Name', 'w/o interference(ms)', 'with interference(ms)', 'cgroup(ms)','psandbox(ms)'] 
+    fields = ['id','Name', 'w/o interference(ms)', 'with interference(ms)', 'cgroup(ms)','pbox(ms)'] 
     with open(args.output, 'w') as csvfile: 
         csvwriter = csv.writer(csvfile) 
         csvwriter.writerow(fields) 
@@ -190,43 +261,56 @@ def average_analyzer(args):
                 if os.path.isdir(path):
                     id = dir_name[1:]
                     row = [id,dir_name]
-                    if dir_name in apache_cases:
+                    if dir_name in apache_cases or dir_name in memcached_cases:
                         for file in os.listdir(path):
-                            if file == "no_psandbox.log":
-                                interference_latencys = analyzer_apache(path,file)
-                                row.insert(3,interference_latencys)
-                            elif file == "no_interference.log":
-                                normal_latencys = analyzer_apache(path,file)
+                            if file == "no_interference.log":
+                                if dir_name in memcached_cases:
+                                    normal_latencys = analyzer_memcached(path,file)
+                                else:
+                                    normal_latencys = analyzer_apache(path,file)
                                 row.insert(2,normal_latencys)
+                            elif file == "no_psandbox.log":
+                                if dir_name in memcached_cases:
+                                    normal_latencys = analyzer_memcached(path,file)
+                                else:
+                                    interference_latencys = analyzer_apache(path,file)
+                                row.insert(3,interference_latencys)
                             elif file == "cgroup.log":
-                                cgroup_latencys = analyzer_apache(path,file)
+                                if dir_name in memcached_cases:
+                                    normal_latencys = analyzer_memcached(path,file)
+                                else:
+                                    cgroup_latencys = analyzer_apache(path,file)
                                 row.insert(4,cgroup_latencys)
                             elif file == "psandbox.log":
-                                psandbox_latencys = analyzer_apache(path,file)
+                                if dir_name in memcached_cases:
+                                    normal_latencys = analyzer_memcached(path,file)
+                                else:
+                                    psandbox_latencys = analyzer_apache(path,file)
                                 row.insert(5,psandbox_latencys)
+
                     else:
                         for file in os.listdir(path):
                             if (file == "no_psandbox.log"):
                                 if dir_name == "c6":
-                                    normal_latencys = get_normal_tps(path,file,1)
+                                    normal_latencys = analyzer_mysql(path,file,1)
                                 else:
-                                    normal_latencys = get_normal_tps(path,file,0)
-                                # normal_latencys = get_normal_tps(path,file,0)
+                                    normal_latencys = analyzer_mysql(path,file,0)
+                                # normal_latencys = analyzer_mysql(path,file,0)
                                 row.insert(2,normal_latencys[0])
                                 row.insert(3,normal_latencys[1])
                             elif (file == "cgroup.log"):
                                 if dir_name == "c6":
-                                    cgroup_latency = get_normal_tps(path,file,1)
+                                    cgroup_latency = analyzer_mysql(path,file,1)
                                 else:
-                                    cgroup_latency = get_normal_tps(path,file,0)
-                                # cgroup_latency = get_normal_tps(path,file,0)
+                                    cgroup_latency = analyzer_mysql(path,file,0)
+                                # cgroup_latency = analyzer_mysql(path,file,0)
                                 row.insert(4,cgroup_latency[1])
                             elif (file == "psandbox.log"):
                                 if dir_name == "c6":
-                                    psandbox_latency = get_normal_tps(path,file,1)
+                                    psandbox_latency = analyzer_mysql(path,file,1)
                                 else:
-                                    psandbox_latency = get_normal_tps(path,file,0)
-                                # psandbox_latency = get_normal_tps(path,file,0)
+                                    psandbox_latency = analyzer_mysql(path,file,0)
+                                # psandbox_latency = analyzer_mysql(path,file,0)
                                 row.insert(5,psandbox_latency[1])
                     csvwriter.writerow(row)
         elif args.depth == 1:
@@ -234,190 +318,154 @@ def average_analyzer(args):
             for file in os.listdir(args.input):
                 if (file == "no_psandbox.log"):
                     if dir_name == "c6":
-                        normal_latencys = get_normal_tps(args.input,file,1)
+                        normal_latencys = analyzer_mysql(args.input,file,1)
                     else:
-                        normal_latencys = get_normal_tps(args.input,file,0)
-                    # normal_latencys = get_normal_tps(args.input,file,0)
+                        normal_latencys = analyzer_mysql(args.input,file,0)
+                    # normal_latencys = analyzer_mysql(args.input,file,0)
                     #print(args.input  + " : " + str(normal_latencys[0]) + " " +  str(normal_latencys[1]))
                     row.insert(2,normal_latencys[0])
                     row.insert(3,normal_latencys[1])
                 elif (file == "cgroup.log"):
                     if dir_name == "c6":
-                        cgroup_latency = get_normal_tps(args.input,file,1)
+                        cgroup_latency = analyzer_mysql(args.input,file,1)
                     else:
-                        cgroup_latency = get_normal_tps(args.input,file,0)
-                    # cgroup_latency = get_normal_tps(args.input,file,0)
+                        cgroup_latency = analyzer_mysql(args.input,file,0)
+                    # cgroup_latency = analyzer_mysql(args.input,file,0)
                     #print(args.input  + " : " + str(cgroup_latency[1]) )
                     row.insert(4,cgroup_latency[1])
                 elif (file == "psandbox.log"):
                     if dir_name == "c6":
-                        psandbox_latency = get_normal_tps(args.input,file,1)
+                        psandbox_latency = analyzer_mysql(args.input,file,1)
                     else:
-                        psandbox_latency = get_normal_tps(args.input,file,0)
-                    # psandbox_latency = get_normal_tps(args.input,file,0)
+                        psandbox_latency = analyzer_mysql(args.input,file,0)
+                    # psandbox_latency = analyzer_mysql(args.input,file,0)
                     #print(args.input  + " : " + str(psandbox_latency[1]))
                     row.insert(5,psandbox_latency[1])
             csvwriter.writerow(row)
             # print(file + ": " + row)
 
-def retro_analyzer(args):
-    fields = ['id','Name', 'w/o interference(ms)', 'with interference(ms)', 'retro(ms)'] 
+
+
+def comparsion_analyzer(args):
+    fields = ['id','Name', 'w/o interference(ms)', 'with interference(ms)', 'pbox(ms)', 'cgroup(ms)', \
+    'parties(w/o interference)',  'parties(with interference)', 'parties(ms)', 'retro(ms)'] 
     with open(args.output, 'w') as csvfile: 
         csvwriter = csv.writer(csvfile) 
         csvwriter.writerow(fields) 
         if args.depth == 2:
             for dir_name in os.listdir(args.input):
-                path = args.input + "/" +dir_name
+                path = args.input + "/" + dir_name
                 if os.path.isdir(path):
                     id = dir_name[1:]
                     row = [id,dir_name]
-                    if dir_name in apache_cases:
+                    if dir_name in apache_cases or dir_name in memcached_cases:
                         for file in os.listdir(path):
-                            if file == "no_psandbox.log":
-                                interference_latencys = analyzer_apache(path,file)
-                                row.insert(3,interference_latencys)
-                            elif file == "no_interference.log":
-                                normal_latencys = analyzer_apache(path,file)
+                            if file == "no_interference.log":
+                                if dir_name in memcached_cases:
+                                    normal_latencys = analyzer_memcached(path,file)
+                                else:
+                                    normal_latencys = analyzer_apache(path,file)
                                 row.insert(2,normal_latencys)
-                            elif file == "retro.log":
-                                cgroup_latencys = analyzer_apache(path,file)
+                            elif file == "no_psandbox.log":
+                                if dir_name in memcached_cases:
+                                    normal_latencys = analyzer_memcached(path,file)
+                                else:
+                                    interference_latencys = analyzer_apache(path,file)
+                                row.insert(3,interference_latencys)
+                            elif file == "cgroup.log":
+                                if dir_name in memcached_cases:
+                                    normal_latencys = analyzer_memcached(path,file)
+                                else:
+                                    cgroup_latencys = analyzer_apache(path,file)
                                 row.insert(4,cgroup_latencys)
+                            elif file == "psandbox.log":
+                                if dir_name in memcached_cases:
+                                    normal_latencys = analyzer_memcached(path,file)
+                                else:
+                                    psandbox_latencys = analyzer_apache(path,file)
+                                row.insert(5,psandbox_latencys)
+                            if file == "no_interference_parties.log":
+                                if dir_name in memcached_cases:
+                                    normal_latencys = analyzer_memcached(path,file)
+                                else:
+                                    interference_latencys = analyzer_apache(path,file)
+                                row.insert(6,interference_latencys)
+                            elif file == "no_parties.log":
+                                if dir_name in memcached_cases:
+                                    normal_latencys = analyzer_memcached(path,file)
+                                else:
+                                    normal_latencys = analyzer_apache(path,file)
+                                row.insert(7,normal_latencys)
+                            elif file == "parties.log":
+                                if dir_name in memcached_cases:
+                                    normal_latencys = analyzer_memcached(path,file)
+                                else:
+                                    cgroup_latencys = analyzer_apache(path,file)
+                                row.insert(8,cgroup_latencys)
+                            elif file == "retro.log":
+                                if dir_name in memcached_cases:
+                                    normal_latencys = analyzer_memcached(path,file)
+                                else:
+                                    cgroup_latencys = analyzer_apache(path,file)
+                                row.insert(9,cgroup_latencys)
                     else:
                         for file in os.listdir(path):
                             if (file == "no_psandbox.log"):
                                 if dir_name == "c6":
-                                    normal_latencys = get_normal_tps(path,file,1)
+                                    normal_latencys = analyzer_mysql(path,file,1)
                                 else:
-                                    normal_latencys = get_normal_tps(path,file,0)
-                                # normal_latencys = get_normal_tps(path,file,0)
+                                    normal_latencys = analyzer_mysql(path,file,0)
+                                # normal_latencys = analyzer_mysql(path,file,0)
                                 row.insert(2,normal_latencys[0])
                                 row.insert(3,normal_latencys[1])
+                            elif (file == "psandbox.log"):
+                                if dir_name == "c6":
+                                    psandbox_latency = analyzer_mysql(path,file,1)
+                                else:
+                                    psandbox_latency = analyzer_mysql(path,file,0)
+                                # psandbox_latency = analyzer_mysql(path,file,0)
+                                row.insert(4,psandbox_latency[1])
+                            elif (file == "cgroup.log"):
+                                if dir_name == "c6":
+                                    cgroup_latency = analyzer_mysql(path,file,1)
+                                else:
+                                    cgroup_latency = analyzer_mysql(path,file,0)
+                                # cgroup_latency = analyzer_mysql(path,file,0)
+                                row.insert(5,cgroup_latency[1])
+                            
+                            elif (file == "parties_baseline.log"):
+                                if dir_name == "c6":
+                                    normal_latencys = analyzer_mysql(path,file,1)
+                                else:
+                                    normal_latencys = analyzer_mysql(path,file,0)
+                                row.insert(6,normal_latencys[0])
+                                row.insert(7,normal_latencys[1])
                             elif (file == "retro.log"):
                                 if dir_name == "c6":
-                                    cgroup_latency = get_normal_tps(path,file,1)
+                                    cgroup_latency = analyzer_mysql(path,file,1)
                                 else:
-                                    cgroup_latency = get_normal_tps(path,file,0)
-                                # cgroup_latency = get_normal_tps(path,file,0)
-                                row.insert(4,cgroup_latency[1])
-                    csvwriter.writerow(row)
-        elif args.depth == 1:
-            row = [1, args.input]
-            for file in os.listdir(args.input):
-                if (file == "no_psandbox.log"):
-                    if dir_name == "c6":
-                        cgroup_latency = get_normal_tps(args.input,file,1)
-                    else:
-                        cgroup_latency = get_normal_tps(args.input,file,0)
-                    # normal_latencys = get_normal_tps(args.input,file,0)
-                    #print(args.input  + " : " + str(normal_latencys[0]) + " " +  str(normal_latencys[1]))
-                    row.insert(2,normal_latencys[0])
-                    row.insert(3,normal_latencys[1])
-                elif (file == "retro.log"):
-                    if dir_name == "c6":
-                        cgroup_latency = get_normal_tps(args.input,file,1)
-                    else:
-                        cgroup_latency = get_normal_tps(args.input,file,0)
-                    # cgroup_latency = get_normal_tps(args.input,file,0)
-                    #print(args.input  + " : " + str(cgroup_latency[1]) )
-                    row.insert(4,cgroup_latency[1])
-            csvwriter.writerow(row)
-            # print(file + ": " + row)
+                                    cgroup_latency = analyzer_mysql(path,file,0)
+                                # cgroup_latency = analyzer_mysql(path,file,0)
+                                row.insert(9,cgroup_latency[1])
 
 
-def tail_analyzer(args):
-    fields = ['Name', 'w/o interference(ms)', 'with interference(ms)', 'cgroup(ms)','psandbox(ms)'] 
-    with open(args.output, 'w') as csvfile: 
-        csvwriter = csv.writer(csvfile) 
-        csvwriter.writerow(fields) 
-        if args.depth == 2:
-            for dir_name in os.listdir(args.input):
-                path = args.input + "/" + dir_name
-                if os.path.isdir(path):
-                    row = [dir_name]
-                    for file_name in os.listdir(path):
-                        if (file_name == "no_psandbox.log"):
-                            normal_latencys = taillatency_analyzer(path + "/"+ file_name,0)
-                            row.insert(1,normal_latencys[0])
-                            row.insert(2,normal_latencys[1])
-                        elif (file_name == "cgroup.log"):
-                            cgroup_latency = taillatency_analyzer(path + "/"+ file_name,0)
-                            row.insert(3,cgroup_latency[1])
-                        elif (file_name == "psandbox.log"):
-                            psandbox_latency = taillatency_analyzer(path + "/"+ file_name,0);
-                            row.insert(4,psandbox_latency[1])
-                        elif (fine_name == "parties.log"):
-                            psandbox_latency = taillatency_analyzer(path + "/"+ file_name,0);
-                            row.insert(4,psandbox_latency[1])
-                    csvwriter.writerow(row)
-        elif args.depth == 1:
-            row = [args.input]
-            for file in os.listdir(args.input):
-                if (file == "no_psandbox.log"):
-                    normal_latencys = taillatency_analyzer(args.input+ "/"+  file,0)
-                    print(args.input  + " : " + str(normal_latencys[0]) + " " +  str(normal_latencys[1]))
-                    row.insert(1,normal_latencys[0])
-                    row.insert(2,normal_latencys[1])
-                elif (file == "cgroup.log"):
-                    cgroup_latency = taillatency_analyzer(args.input+ "/"+  file,0)
-                    row.insert(3,cgroup_latency[1])
-                elif (file == "psandbox.log"):
-                    psandbox_latency = taillatency_analyzer(args.input+ "/"+  file,0)
-                    row.insert(4,psandbox_latency[1])
-                elif (file == "parties.log"):
-                    psandbox_latency = taillatency_analyzer(path + "/"+ file,0);
-                    row.insert(4,psandbox_latency[1])
-            csvwriter.writerow(row)
-            # print(file + ": " + row)
-
-
-def parties_analyzer(args):
-    fields = ['id','Name', 'w/o interference(ms)', 'with interference(ms)', 'parites(ms)'] 
-    with open(args.output, 'w') as csvfile: 
-        csvwriter = csv.writer(csvfile) 
-        csvwriter.writerow(fields) 
-        if args.depth == 2:
-            for dir_name in os.listdir(args.input):
-                path = args.input + "/" + dir_name
-                if os.path.isdir(path):
-                    id = dir_name[1:]
-                    row = [id,dir_name]
-                    if dir_name in apache_cases:
-                        for file in os.listdir(path):
-                            if file == "no_interference_parties.log":
-                                interference_latencys = analyzer_apache(path,file)
-                                row.insert(3,interference_latencys)
-                            elif file == "no_parties.log":
-                                normal_latencys = analyzer_apache(path,file)
-                                row.insert(2,normal_latencys)
-                            elif file == "parties.log":
-                                cgroup_latencys = analyzer_apache(path,file)
-                                row.insert(4,cgroup_latencys)
-                    else:
-                        for file_name in os.listdir(path):
-                            if (file_name == "parties_baseline.log"):
-                                if dir_name == "c6":
-                                    normal_latencys = get_normal_tps(path,file_name,1)
-                                else:
-                                    normal_latencys = get_normal_tps(path,file_name,0)
-                                row.insert(2,normal_latencys[0])
-                                row.insert(3,normal_latencys[1])
                         if os.path.isdir(path + "/front_1"):
                             for file_name in os.listdir(path + "/front_1"):
                                 if (file_name == "parties.log"):
                                     if dir_name == "c6":
-                                        psandbox_latency = get_normal_tps(path + "/front_1",file_name,1)
+                                        psandbox_latency = analyzer_mysql(path + "/front_1",file_name,1)
                                     else:
-                                        psandbox_latency = get_normal_tps(path + "/front_1",file_name,0)
-                                    row.insert(4,psandbox_latency[1])
+                                        psandbox_latency = analyzer_mysql(path + "/front_1",file_name,0)
+                                    row.insert(8,psandbox_latency[1])
                     csvwriter.writerow(row)
         elif args.depth == 1:
             row = [args.input]
             for file in os.listdir(args.input):
                 if (file == "parties_baseline.log"):
                     if "c6" in args.input:
-                        normal_latencys = get_normal_tps(args.input,file,1)
+                        normal_latencys = analyzer_mysql(args.input,file,1)
                     else:
-                        normal_latencys = get_normal_tps(args.input,file,0)
+                        normal_latencys = analyzer_mysql(args.input,file,0)
                     # print(args.input  + " : " + str(normal_latencys[0]) + " " +  str(normal_latencys[1]))
                     row.insert(1,normal_latencys[0])
                     row.insert(2,normal_latencys[1])
@@ -425,9 +473,9 @@ def parties_analyzer(args):
                 for file_name in os.listdir(args.input + "/front_1"):
                     if (file_name == "parties.log"):
                         if "c6" in args.input:
-                            psandbox_latency = get_normal_tps(args.input +  "/front_1",file_name,1)
+                            psandbox_latency = analyzer_mysql(args.input +  "/front_1",file_name,1)
                         else:
-                            psandbox_latency = get_normal_tps(args.input + "/front_1",file_name,0)
+                            psandbox_latency = analyzer_mysql(args.input + "/front_1",file_name,0)
                         row.insert(3,psandbox_latency[1])
             csvwriter.writerow(row)
             # print(row)
@@ -445,7 +493,7 @@ def sentivity_result(args):
                 if os.path.isdir(path):
                     row = [dir_name]
                     for index,file in enumerate(sensitivity_logs):
-                        normal_latencys = get_normal_tps(path,file,0)
+                        normal_latencys = analyzer_mysql(path,file,0)
                         if (file == "no_psandbox.log"):
                             row.insert(1,normal_latencys[0])
                             row.insert(2,normal_latencys[1])
@@ -465,7 +513,7 @@ def adaptive_result(args):
                     row = [dir_name]
                     for index,file in enumerate(adaptive_logs):
                         # print(file)
-                        normal_latencys = get_normal_tps(path,file)
+                        normal_latencys = analyzer_mysql(path,file)
                         # print(normal_latencys)
                         row.insert(index+1,normal_latencys[1])
                     csvwriter.writerow(row)
@@ -504,7 +552,7 @@ if __name__ == "__main__":
     elif args.type == 4:
         adaptive_result(args)
     elif args.type == 5:
-        parties_analyzer(args)
+        comparsion_analyzer(args)
     elif args.type == 6:
         retro_analyzer(args)
     elif args.type == 7:

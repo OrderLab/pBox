@@ -121,11 +121,12 @@ elif [[ $1 == 6 ]]; then
   mkdir -p $LOG_DIR/c16/back_1
   parties
 elif [[ $1 == 7 ]]; then
-  parties_normal >> $LOG_DIR/c16/parties_baseline.log
+  parties_normal > $LOG_DIR/c16/no_interference_parties.log
+  interference > $LOG_DIR/c16/no_parties.log
 elif [[ $1 == 8 ]]; then
   interference > $LOG_DIR/c16/retro.log
 elif [[ $1 == 9 ]]; then
-    parties_normal >> $LOG_DIR/c5/parties_baseline.log
+    parties_normal > $LOG_DIR/c5/parties_baseline.log
 fi
 
 pkill memcached

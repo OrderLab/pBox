@@ -21,8 +21,6 @@ def run_pbox(args):
             if index != 2:
                 cmd = "./script/run_experiment.py -i script/cases/c" + str(index) + "/  -p 3"
                 os.system(cmd)
-        cmd = "./script/log_analyzer.py -i result/cases -o result/data/mitigation_pbox.csv -d 2 -t 2"
-        os.system(cmd)
     else:
         cmd = "./script/run_experiment.py -i script/cases/c" + str(args.index) + "/  -p 1"
         os.system(cmd)
@@ -30,47 +28,34 @@ def run_pbox(args):
         os.system(cmd)
         cmd = "./script/run_experiment.py -i script/cases/c" + str(args.index) + "/  -p 3"
         os.system(cmd)
-        cmd = "./script/log_analyzer.py -i result/cases/c" + str(args.index) +" -o result/data/mitigation_pbox.csv -t 2"
-        os.system(cmd)
+    cmd = "./script/log_analyzer.py -i result/cases -o result/data/mitigation_pbox.csv -d 2 -t 2"
+    os.system(cmd)
 
 
-def run_parties(args):
+def run_comparsion(args):
     if args.index == 0:
-        for index in range(1,11):
+        for index in range(1,17):
             cmd = "./script/run_experiment.py -i script/cases/c" + str(index) + "/  -p 6"
             os.system(cmd)
             cmd = "./script/run_experiment.py -i script/cases/c" + str(index) + "/  -p 7"
             os.system(cmd)
-        cmd = "./script/log_analyzer.py -i result/cases -o result/data/mitigation_parties.csv -d 2 -t 5"
-        os.system(cmd)
+            cmd = "./script/run_experiment.py -i script/cases/c" + str(index) + "/  -p 8"
+            os.system(cmd)
     else:
         cmd = "./script/run_experiment.py -i script/cases/c" + str(args.index) + "/  -p 6"
         os.system(cmd)
         cmd = "./script/run_experiment.py -i script/cases/c" + str(args.index) + "/  -p 7"
         os.system(cmd)
-        cmd = "./script/log_analyzer.py -i result/cases/c" + str(args.index) +" -o result/data/mitigation_pbox.csv -t 5"
-        os.system(cmd)
-
-def run_retro(args):
-    if args.index == 0:
-        for index in range(1,11):
-            cmd = "./script/run_experiment.py -i script/cases/c" + str(index) + "/  -p 8"
-            os.system(cmd)
-        cmd = "./script/log_analyzer.py -i result/cases -o result/data/mitigation_retro.csv -d 2 -t 6"
-        os.system(cmd)
-    else:
         cmd = "./script/run_experiment.py -i script/cases/c" + str(args.index) + "/  -p 8"
         os.system(cmd)
-        cmd = "./script/log_analyzer.py -i result/cases/c" + str(args.index) +" -o result/data/mitigation_pbox.csv -t 6"
-        os.system(cmd)
+    cmd = "./script/log_analyzer.py -i result/cases -o result/data/mitigation_comparsion.csv -d 2 -t 5"
+    os.system(cmd)
 
 def main(args):
     if args.type == 0:
         run_pbox(args)
     elif args.type == 1:
-        run_parties(args)
-    elif args.type == 2:
-        run_retro(args)
+        run_comparsion(args)
 
 if __name__ == "__main__":
     # execute only if run as a script
