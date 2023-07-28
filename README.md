@@ -37,52 +37,83 @@ interference, which the end-to-end performance can observe.
 
 ## Getting Started & Installing pBox Kernel (30 human-minutes + 40 compute-minutes)
 
-This instruction describes how to use pbox on Cloudlab. We will use Utah xl170 machines in Cloudlab. Please make sure that some are [available](https://www.cloudlab.us/resinfo.php) before you start.
+pBox can be used in recent Linux systems (tested on Debian 10.9, Ubuntu 18.04, and Ubuntu 20.04). For development and exploration of pBox, we recommend the usage of a VM or QEMU. For performance measurements, pBox should be used in a physical machine.
 
-1. Instantiate a cloudlab node.
+To ensure consistency for the artifact evaluation, the following instructions describe how to use pBox on a physical node in CloudLab. We will use **Utah xl170** machines in CloudLab. Please make sure that some nodes are [available](https://www.cloudlab.us/resinfo.php) before you start.
+
+1. Instantiate a CloudLab node.
     * [Login to Cloudlab](https://www.cloudlab.us/login.php).
-    * Instantiate an node with our [cloudlab profile](https://www.cloudlab.us/p/FailureDetection/pbox).
+    * Instantiate a node with our [cloudlab profile](https://www.cloudlab.us/p/FailureDetection/pbox).
+
 1. Login to the node using ssh
-1. Create a pbox user account.
+
+1. Create a pBox user account.
      * run `sudo useradd -m -s $(which bash) -d /data/pbox -G sudo pbox` to create the account
      * run `sudo passwd pbox` to create the password for pbox account
      * Switch to pbox account `sudo su pbox`
      * change into home directory `cd ~`
      * **Note**: you may want to add your ssh public key in pbox user account if you want to ssh to the machine.
+
 1. Clone [pbox](https://github.com/OrderLab/pBox.git) and its submodules.
     * `git clone --recursive https://github.com/OrderLab/pBox.git pbox`
-1. Build pbox kernel.
-    * `cd ~/pbox/psandbox-kernel`
-    * In psandbox-kernel directory, run the command `./setup_pbox_kernel.sh` to build the pbox kernel
-    * This command produces a pbox kernel image(`.deb` files) and installs it on the machine.
-1. Boot the machine to switch to the pbox image.
+
+1. Build pBox kernel.
+
+    ```bash
+    cd ~/pbox/psandbox-kernel
+    ./setup_pbox_kernel.sh
+    ```
+
+    * If successful,  the pBox kernel image (`linux-*-5.4.0-my-k*.deb` files) will be built and installed.
+      * **Note**⚠️: the script will ask for your confirmation before installing the pBox kernel, please enter `Y`.
+
+1. Boot the machine to switch to the pBox image.
    * `sudo reboot`
-   * The machine would choose the pbox image by default
-1. Install the pbox user lib.
-   * change into `psandbox-userlib` directory: `cd ~/pbox/psandbox-userlib`
-   * In psandbox-userlib directory, run the command `./setup_pbox_lib.sh` to build the pbox user library
+   * The machine would choose the pBox image by default
+
+1. Install the pBox user library.
+
+   ```bash
+   cd ~/pbox/psandbox-userlib
+   ./setup_pbox_lib.sh
+   ```
+
+   * If successful, the pBox user library (`build/libs/libpsandbox.so`) will be built.
    * Set the environment variable by `source ~/.bashrc`
 
 ## Running Basic Microbenchmark Experiment (5 minutes) 
-1. Follow the installing the pbox instructions above.
-1. In the pbox directory, run the command `./script/run_experiment.py -i script/microbenchmark`. This will run the microbenchmark experiment in Figure 10. Each microbenchmark operation would run 100K times. The raw data should be output in `result/eval_micro.csv`.
-1. Plot the figure by running the `./script/microbenchmark/plot.sh` command. The Cloudlab does not contain GUI environment, so to view the figure, it needs to be copied to your own machine first.
+1. Follow the installing the pBox instructions above.
+1. In the `pbox` directory, run the command `./script/run_experiment.py -i script/microbenchmark`. This will run the microbenchmark experiment in Figure 10. Each microbenchmark operation would run 100K times. The raw data should be output in `result/eval_micro.csv`.
+1. Plot the figure by running the `./script/microbenchmark/plot.sh` command. The CloudLab node does not contain GUI environment, so to view the figure, it needs to be copied to your own machine first.
 
 ## Build Applications & Test Frameworks (approximately 30 minutes)
 1. Download and build all applications used for the experiments.
    * Source the bash file `source ~/.bashrc`
+   
    * `cd ~/pbox/software`
-   * Download all the applications: `./download_all.sh`
-   * Build all the applications: `./compile_all.sh`
+   
+   * Download and build the applications:
+   
+     ```bash
+     ./download_all.sh
+     ./compile_all.sh
+     ```
+   
+     * The first script downloads five applications (MySQL, PostgreSQL, Apache, Varnish, and Memcached) and their benchmark tools in the `software` directory. The second script compiles the five applications.
+     * It takes around 25 mins for the downloading and building to finish. 
+   
    * Source the bash file `source ~/.bashrc`
-   * This script downloads the five applications: MySQL, PostgreSQL, apache, varnish, Memcache and their benchmark tool in the software folder. It takes around 25 mins to download and build the applications. Remember to source the bashrc file again after the compilation, as the pbox would update the environment variable in the bashrc file.
-1. Build all test frameworks:
+   
+     * **Note**⚠️: important since the previous scripts would update the environment variables in `.bashrc`.
+   
+1. Build the benchmark tools for the applications:
    * Source the bash file `source ~/.bashrc`
    * `cd ~/pbox/software`
    * `./compile_benchmark.sh`
    * Source the bash file `source ~/.bashrc`
-1. Node setup for Apache and varnish
-    * For Apache and varnish experiment, we will create three additional clients node.
+   
+1. Node setup for Apache and Varnish
+    * For Apache and Varnish experiment, we will create three additional clients node.
     * Instantiate a node with our [cloudlab profile](https://www.cloudlab.us/p/FailureDetection/client).
     * In each client machine, run `sudo apt install apache2-utils` to install a benchmarking tool.
     * In the server machine,
@@ -99,45 +130,49 @@ This instruction describes how to use pbox on Cloudlab. We will use Utah xl170 m
                    HostName c220g5-110908.wisc.cloudlab.us
                    User pbox
               ```
-            * **Note**: the host name must be client1, client2 and client3. A different name would cause failure when running the experiment on Apache and varnish.
-            * **Note**: please make sure that client1|2|3 are in known_hosts. This can be done by manually `ssh` into each client once from the server machine before running scripts
+            * **Note**⚠️: the host name must be `client1`, `client2` and `client3`. A different name would cause failures when running the experiments on Apache and Varnish.
+            * **Note**⚠️:  please make sure that client1|2|3 are in known_hosts. This can be done by manually `ssh` into each client once from the server machine before running scripts
         2. set the environment variable `SERVER_NODE` to store the server machine's public IP for clients to connect
             * Example: `echo 'export SERVER_NODE=c220g5-110990.wisc.cloudlab.us >> ~/.bashrc'`
-            * **Note**: its value is passed remotely to clients. You only need to set it in the server machine.
+            * **Note**⚠️: its value is passed remotely to clients. You only need to set it in the server machine.
     
 
 ## Running the mitigation experiment for Figure 11 (30 human minutes and approximately 8 compute hours)
-This experiment measures the effectiveness of pbox on 16 cases in paper's table 3 and compares pbox with four performance interference
-mitigation solutions: cgroup, PARTIES, Retro and DARC. The experiment reproduces the result in Figure 11. 
+This experiment measures the effectiveness of pBox on 16 cases in paper's table 3 and compares pBox with four performance interference mitigation solutions: cgroup, PARTIES, Retro and DARC. The experiment reproduces the result in Figure 11. 
 
 ### Running the pbox mitigation experiment on each real-world case
+
 1. Running the vanilla Linux, pbox and cgroup.
     * `cd ~/pbox`
-    * To run all the cases, use `/script/run_mitigate.py.` To run one case, use `./script/run_mitigate.py -i _case_id_`
-    * The raw data is in `result/data/mitigation_pbox.csv`
-1. Plot the figure by running `./script/cases/plot_eval_mitigation_pbox.py result/data/mitigation_pbox.csv -o fig11_half.eps`
-### Running the comparison experiment on Partis and Retro
-1. Running the parties and Retro.
-    * `cd ~/pbox`
-    * To run all the cases, use `/script/run_mitigate.py -t 1`. To run one case, use `./script/run_mitigate.py -t 1 -i _case_id_`
-    * The raw data is in `result/data/eval_mitigation.csv.`
- 1. Plot the figure by running `./script/cases/plot_eval_mitigation_comparsion.py result/data/eval_mitigation.csv -o fig11_half.eps` 
+    * To run all the cases, use `/script/run_mitigate.py` 
+      * To run one case, use `./script/run_mitigate.py -i <case_id>`
+    * The raw data will be in `result/data/mitigation_pbox.csv`
+1. Plot the figure by running `./script/cases/plot_eval_mitigation_pbox.py result/data/mitigation_pbox.csv -o fig11_half.pdf`
+### Running the comparison experiments with Parties and Retro
 
-**Note**: Some test results may differ greatly from the paper's figure due to the system's performance variance. If you encounter the issue, follow the following debugging process: 
+1. Running the Parties and Retro.
+    * `cd ~/pbox`
+    * To run all the cases, use `/script/run_mitigate.py -t 1`. 
+      * To run one case, use `./script/run_mitigate.py -t 1 -i <case_id>`
+    * The raw data will be in `result/data/eval_mitigation.csv.`
+ 1. Plot the figure by running `./script/cases/plot_eval_mitigation_comparsion.py result/data/eval_mitigation.csv -o fig11_half.pdf` 
+
+**Note**⚠️: Some test results may differ from the paper's figure due to the system's performance variance. If you encounter the issue, try the following debugging process: 
+
 * Check the raw data in the `result/data/mitigation_pbox.csv` or `result/data/eval_mitigation.csv` to find the problematic data point and its cases number
 * Regenerate data point by running `./script/log_analyzer.py -i result/cases -o result/data/mitigation_pbox.csv -d 2 -t 2` for pbox mitigation experiment or `./script/log_analyzer.py -i result/cases -o result/data/eval_mitigation.csv -d 2 -t 5` for comparison experiment.
-* If the data is still incorrect, rerun the problematic case by running `./script/run_mitigate.py -t 1 -i _case_id_`.
-
+* If the data is still incorrect, rerun the problematic case by running `./script/run_mitigate.py -t 1 -i <case_id>`.
 
 ## Running the Sensitivity Experiment for Figure 12 (approximately 2 hours)
+
 This experiment measures the sensitivity of isolation goals when creating a pbox. The experiment reproduces the result in Figure 12.
 1. Running the experiment
     * `cd ~/pbox`
-    * To run all the cases, use `./script/run_sensitivity.py -i 0`. To specify one case, use `./script/run_mitigate.py -i _case_id_`
+    * To run all the cases, use `./script/run_sensitivity.py -i 0`. 
+      * To specify one case, use `./script/run_mitigate.py -i <case_id>`
     * The raw data is in `result/data/eval_sensitivity.csv`
-1. Plot the figure by running `./script/sensitivity/plot_eval_rule_sensitivity.py result/data/eval_sensitivity.csv -o fig12.eps`
-1. **Note**: Some cases' results may differ from the paper's figure due to performance variance. If you encounter the issues, follow the debugging process above. The command to regenerate data for sensitivity experiment is `./script/log_analyzer.py -i result/sensitivity -o result/data/eval_sensitivity.csv -d 2 -t 3`
-   
+1. Plot the figure by running `./script/sensitivity/plot_eval_rule_sensitivity.py result/data/eval_sensitivity.csv -o fig12.pdf`
+1. **Note**⚠️: Some cases' results may differ from the paper's figure due to performance variance. If you encounter the issues, follow the debugging process above. The command to regenerate data for sensitivity experiment is `./script/log_analyzer.py -i result/sensitivity -o result/data/eval_sensitivity.csv -d 2 -t 3`
 ## Running the Performance Overhead Experiment for Figure 13 (approximately 1.5 hours)
 This experiment measures the end-to-end throughput of pbox for all five systems under the standard workload. The experiment reproduces the result in Figure 13.
 1. Running the experiment.
@@ -151,11 +186,10 @@ This experiment measures the end-to-end throughput of pbox for all five systems 
                                        0: write-intensive, 1: read-intensive
          -p ISPBOX, --ispbox ISPBOX; whether the pbox is running
                                   0: no pbox, 1: pbox
-
+      
       ```
     * To run one setting, use `./script/run_mitigate.py -n app_name -t threads -p 0 -r 0`
     * The raw data is in `result/data/` folder. The overall result is `result/data/eval_overhead.csv.` The result for each application is `overhead_appname.csv`
-1. Plot the figure by running the script `./script/overhead/plot_eval_overhead.py result/data/eval_overhead.csv -o fig12.eps`
-1. **Note**: Some test results may differ greatly from the paper's figure due to performance variance. If you encounter the issue, please follow the debugging process above. The command to regenerate data for overhead experiment is `./script/log_analyzer.py -i result/overhead -o result/data/eval_overhead.csv -d 2 -t 7`
-
+1. Plot the figure by running the script `./script/overhead/plot_eval_overhead.py result/data/eval_overhead.csv -o fig12.pdf`
+1. **Note**⚠️: Some test results may differ greatly from the paper's figure due to performance variance. If you encounter the issue, please follow the debugging process above. The command to regenerate data for overhead experiment is `./script/log_analyzer.py -i result/overhead -o result/data/eval_overhead.csv -d 2 -t 7`
 
