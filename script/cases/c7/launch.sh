@@ -164,7 +164,7 @@ elif [[ $1 == 9 ]]; then
   cp ../../libpsandbox.so $PSANDBOXDIR/build/libs/libpsandbox.so
 fi
 
-
+if [[ $1 != 9 ]]; then
 mkdir -p $LOG_DIR/c7
 postgres -D $PSANDBOX_POSTGRES_DIR/data/ --config-file=$PSANDBOX_POSTGRES_DIR/data/postgresql.conf &
 sleep 1
@@ -175,7 +175,7 @@ fi
 
 $POSTGRES_SYSBENCH_DIR/bin/sysbench --pgsql-db=postgres --pgsql-user=$(whoami) --tables=64 --table-size=1000 --threads=1 $POSTGRES_SYSBENCH_DIR/share/sysbench/oltp_update_index.lua cleanup >> /dev/null
 $POSTGRES_SYSBENCH_DIR/bin/sysbench --pgsql-db=postgres --pgsql-user=$(whoami) --tables=64 --table-size=1000 --threads=1 $POSTGRES_SYSBENCH_DIR/share/sysbench/oltp_update_index.lua prepare >> /dev/null
-
+fi
 if [[ $1 == 1 ]]; then
   normal >> $LOG_DIR/c7/no_psandbox.log
   #normal

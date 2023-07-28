@@ -172,6 +172,12 @@ elif [[ $1 == 7 ]]; then
     echo "0" | sudo tee /sys/fs/cgroup/cpuset/hu_apache_4/cpuset.mems
     echo "0-19" | sudo tee /sys/fs/cgroup/cpuset/hu_apache_4/cpuset.cpus
     cp ../../libpsandbox.so $PSANDBOXDIR/build/libs/libpsandbox.so
+elif [[ $1 == 8 ]]; then
+  echo "run c13 retro"
+  cp ../../libretro.so $PSANDBOXDIR/build/libs/libpsandbox.so
+elif [[ $1 == 9 ]]; then
+  echo "run c13 psp"
+  cp ../../libpsandbox.so $PSANDBOXDIR/build/libs/libpsandbox.so
 fi
 
 pkill php-fpm
@@ -203,6 +209,10 @@ elif [[ $1 == 6 ]]; then
     parties
 elif [[ $1 == 7 ]]; then
     parties_normal
+elif [[ $1 == 8 ]]; then
+    psandbox > $LOG_DIR/c13/retro.log
+elif [[ $1 == 9 ]]; then
+    ${PSP_DIR}/sosp_aec/psandbox_script/apache_server.sh
 fi
 
 sleep 5

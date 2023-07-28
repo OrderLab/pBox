@@ -143,7 +143,7 @@ elif [[ $1 == 9 ]]; then
   cp ../../libpsandbox.so $PSANDBOXDIR/build/libs/libpsandbox.so
 fi
 
-
+if [[ $1 != 9 ]]; then
 mkdir -p $LOG_DIR/c2
 mysqld --defaults-file=../mysql.cnf  &
 sleep 5
@@ -151,7 +151,7 @@ if [[ $0 == 2 ]]; then
   TLIST=$(ps -e -T | grep mysqld | awk '{print $2}' | sort -h)
   for T in $TLIST; do (echo "$T") | sudo tee /sys/fs/cgroup/cpu/cpuback/tasks; done >> /dev/null
 fi
-
+fi
 if [[ $1 == 1 ]]; then
   normal > $LOG_DIR/c2/no_psandbox.log
   #normal

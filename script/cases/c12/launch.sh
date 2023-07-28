@@ -147,7 +147,14 @@ elif [[ $1 == 6 ]]; then
 elif [[ $1 == 7 ]]; then
     echo "run c12 parties baseline"
     cp ../../libpsandbox.so $PSANDBOXDIR/build/libs/libpsandbox.so
+elif [[ $1 == 8 ]]; then
+  echo "run c12 retro"
+  cp ../../libretro.so $PSANDBOXDIR/build/libs/libpsandbox.so
+elif [[ $1 == 9 ]]; then
+  echo "run c12 psp"
+  cp ../../libpsandbox.so $PSANDBOXDIR/build/libs/libpsandbox.so
 fi
+
 
 cp php_wrapper $PSANDBOX_APACHE_DIR/php/bin/php-wrapper
 cp $PSANDBOX_APACHE_DIR/../php-7.4.23/php.ini-development $PSANDBOX_APACHE_DIR/php/php.ini
@@ -175,6 +182,11 @@ elif [[ $1 == 6 ]]; then
     parties
 elif [[ $1 == 7 ]]; then
     parties_normal
+elif [[ $1 == 8 ]]; then
+    psandbox > $LOG_DIR/c12/retro.log
+elif [[ $1 == 9 ]]; then
+    ${PSP_DIR}/sosp_aec/psandbox_script/apache_server.sh
 fi
+
 
 sleep 15

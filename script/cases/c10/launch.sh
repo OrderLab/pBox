@@ -163,13 +163,14 @@ elif [[ $1 == 9 ]]; then
   cp ../../libpsandbox.so $PSANDBOXDIR/build/libs/libpsandbox.so
 fi
 
-mkdir -p $LOG_DIR/c10
-cp gendata.pl $PSANDBOX_POSTGRES_DIR
-cd $PSANDBOX_POSTGRES_DIR && ./gendata.pl
-cd -
-postgres -D $PSANDBOX_POSTGRES_DIR/data/ --config-file=$PSANDBOX_POSTGRES_DIR/data/postgresql.conf &
-sleep 1
-
+if [[ $1 != 9 ]]; then
+  mkdir -p $LOG_DIR/c10
+  cp gendata.pl $PSANDBOX_POSTGRES_DIR
+  cd $PSANDBOX_POSTGRES_DIR && ./gendata.pl
+  cd -
+  postgres -D $PSANDBOX_POSTGRES_DIR/data/ --config-file=$PSANDBOX_POSTGRES_DIR/data/postgresql.conf &
+  sleep 1
+fi
 if [[ $0 == 2 ]]; then
     TLIST=$(ps -e -T | grep postgre | awk '{print $2}' | sort -h)
     for T in $TLIST; do echo "$T" | sudo tee /sys/fs/cgroup/cpu/cpuback/tasks; done >> /dev/null

@@ -96,8 +96,15 @@ elif [[ $1 == 6 ]]; then
 elif [[ $1 == 7 ]]; then
     echo "run c11 parties baseline"
     cp ../../libpsandbox.so $PSANDBOXDIR/build/libs/libpsandbox.so
+elif [[ $1 == 8 ]]; then
+  echo "run c11 retro"
+  cp ../../libretro.so $PSANDBOXDIR/build/libs/libpsandbox.so
+elif [[ $1 == 9 ]]; then
+  echo "run c11 psp"
+  cp ../../libpsandbox.so $PSANDBOXDIR/build/libs/libpsandbox.so
 fi
 
+if [[ $1 != 9 ]]; then
 cp httpd.conf $PSANDBOX_APACHE_DIR/conf/
 cp php_wrapper $PSANDBOX_APACHE_DIR/php/bin/php-wrapper
 cp $PSANDBOX_APACHE_DIR/../php-7.4.23/php.ini-development $PSANDBOX_APACHE_DIR/php/php.ini
@@ -106,7 +113,7 @@ mkdir -p $LOG_DIR/c11
 apachectl -k start
 
 sleep 1
-
+fi
 if [[ $0 == 2 ]]; then
     TLIST=$(ps -e -T | grep "httpd" | awk '{print $2}' | sort -h)
     for T in $TLIST; do echo "$T" | sudo tee /sys/fs/cgroup/cpu/apache/tasks; done >> /dev/null
@@ -137,4 +144,8 @@ elif [[ $1 == 6 ]]; then
 elif [[ $1 == 7 ]]; then
     cp index_parties.html $PSANDBOX_APACHE_DIR/htdocs/index.html
     parties_normal
+elif [[ $1 == 8 ]]; then
+    psandbox > $LOG_DIR/c11/retro.log
+elif [[ $1 == 9 ]]; then
+    ${PSP_DIR}/sosp_aec/psandbox_script/apache_server.sh
 fi

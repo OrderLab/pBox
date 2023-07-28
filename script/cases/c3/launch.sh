@@ -187,7 +187,7 @@ elif [[ $1 == 9 ]]; then
   cp ../../libpsandbox.so $PSANDBOXDIR/build/libs/libpsandbox.so
 fi
 
-
+if [[ $1 != 9 ]]; then
 mkdir -p $LOG_DIR/c3
 mysqld --defaults-file=my.cnf &
 sleep 5
@@ -198,6 +198,7 @@ fi
 
 sysbench --mysql-socket=$PSANDBOX_MYSQL_DIR/mysqld.sock --mysql-db=test --tables=6 --table-size=1000 --threads=1 --time=70 $SYSBEN_DIR/oltp_point_select.lua --report-interval=3 cleanup >> /dev/null
 sysbench --mysql-socket=$PSANDBOX_MYSQL_DIR/mysqld.sock --mysql-db=test --tables=6 --table-size=1000 --threads=1 --time=70 $SYSBEN_DIR/oltp_point_select.lua --report-interval=3 prepare >> /dev/null
+fi
 if [[ $1 == 1 ]]; then
   normal > $LOG_DIR/c3/no_psandbox.log
   #normal

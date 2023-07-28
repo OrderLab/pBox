@@ -63,40 +63,39 @@ def main(args):
             os.system(cmd)
             cmd = "./script/run_experiment.py -i script/overhead/" + name.lower() + "/  -p 1 64 60 "
             os.system(cmd)
-        if name == "memcached":
-            cmd = "./script/run_experiment.py -i script/overhead/" + name.lower() + "/  -p 0 1 1"
-            os.system(cmd)
-            cmd = "./script/run_experiment.py -i script/overhead/" + name.lower() + "/  -p 0 1 16 60"
-            os.system(cmd)
-            cmd = "./script/run_experiment.py -i script/overhead/" + name.lower() + "/  -p 0 1 32 60"
-            os.system(cmd)
-            cmd = "./script/run_experiment.py -i script/overhead/" + name.lower() + "/  -p 0 1 64 60"
-            os.system(cmd)
-            cmd = "./script/run_experiment.py -i script/overhead/" + name.lower() + "/  -p 1 0 1"
-            os.system(cmd)
-            cmd = "./script/run_experiment.py -i script/overhead/" + name.lower() + "/  -p 1 0 16"
-            os.system(cmd)
-            cmd = "./script/run_experiment.py -i script/overhead/" + name.lower() + "/  -p 1 0 32"
-            os.system(cmd)
-            cmd = "./script/run_experiment.py -i script/overhead/" + name.lower() + "/  -p 1 0 64"
-            os.system(cmd)
-            cmd = "./script/run_experiment.py -i script/overhead/" + name.lower() + "/  -p 1 1 1"
-            os.system(cmd)
-            cmd = "./script/run_experiment.py -i script/overhead/" + name.lower() + "/  -p 1 1 16 60"
-            os.system(cmd)
-            cmd = "./script/run_experiment.py -i script/overhead/" + name.lower() + "/  -p 1 1 32 60"
-            os.system(cmd)
-            cmd = "./script/run_experiment.py -i script/overhead/" + name.lower() + "/  -p 1 1 64 60"
-            os.system(cmd)
-            cmd = "./script/run_experiment.py -i script/overhead/" + name.lower() + "/  -p 0 0 1"
-            os.system(cmd)
-            cmd = "./script/run_experiment.py -i script/overhead/" + name.lower() + "/  -p 0 0 16"
-            os.system(cmd)
-            cmd = "./script/run_experiment.py -i script/overhead/" + name.lower() + "/  -p 0 0 32"
-            os.system(cmd)
-            cmd = "./script/run_experiment.py -i script/overhead/" + name.lower() + "/  -p 0 0 64"
-            os.system(cmd)
-
+        name = "memcached"
+        cmd = "./script/run_experiment.py -i script/overhead/" + name.lower() + "/  -p 0 1 1"
+        os.system(cmd)
+        cmd = "./script/run_experiment.py -i script/overhead/" + name.lower() + "/  -p 0 1 16 60"
+        os.system(cmd)
+        cmd = "./script/run_experiment.py -i script/overhead/" + name.lower() + "/  -p 0 1 32 60"
+        os.system(cmd)
+        cmd = "./script/run_experiment.py -i script/overhead/" + name.lower() + "/  -p 0 1 64 60"
+        os.system(cmd)
+        cmd = "./script/run_experiment.py -i script/overhead/" + name.lower() + "/  -p 1 0 1"
+        os.system(cmd)
+        cmd = "./script/run_experiment.py -i script/overhead/" + name.lower() + "/  -p 1 0 16"
+        os.system(cmd)
+        cmd = "./script/run_experiment.py -i script/overhead/" + name.lower() + "/  -p 1 0 32"
+        os.system(cmd)
+        cmd = "./script/run_experiment.py -i script/overhead/" + name.lower() + "/  -p 1 0 64"
+        os.system(cmd)
+        cmd = "./script/run_experiment.py -i script/overhead/" + name.lower() + "/  -p 1 1 1"
+        os.system(cmd)
+        cmd = "./script/run_experiment.py -i script/overhead/" + name.lower() + "/  -p 1 1 16 60"
+        os.system(cmd)
+        cmd = "./script/run_experiment.py -i script/overhead/" + name.lower() + "/  -p 1 1 32 60"
+        os.system(cmd)
+        cmd = "./script/run_experiment.py -i script/overhead/" + name.lower() + "/  -p 1 1 64 60"
+        os.system(cmd)
+        cmd = "./script/run_experiment.py -i script/overhead/" + name.lower() + "/  -p 0 0 1"
+        os.system(cmd)
+        cmd = "./script/run_experiment.py -i script/overhead/" + name.lower() + "/  -p 0 0 16"
+        os.system(cmd)
+        cmd = "./script/run_experiment.py -i script/overhead/" + name.lower() + "/  -p 0 0 32"
+        os.system(cmd)
+        cmd = "./script/run_experiment.py -i script/overhead/" + name.lower() + "/  -p 0 0 64"
+        os.system(cmd)
     else:
         if args.name in ["mysql","postgresql","memcached"]:
             cmd = "./script/run_experiment.py -i script/overhead/" + args.name.lower() + "/  -p " + args.ispbox + " " \

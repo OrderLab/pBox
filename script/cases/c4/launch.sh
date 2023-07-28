@@ -154,7 +154,7 @@ elif [[ $1 == 9 ]]; then
 fi
 
 
-
+if [[ $1 != 9 ]]; then
 mkdir -p $LOG_DIR/c4
 mysqld --defaults-file=../mysql.cnf &
 sleep 5
@@ -164,6 +164,8 @@ if [[ $0 == 2 ]]; then
 fi
 sysbench --mysql-socket=$PSANDBOX_MYSQL_DIR/mysqld.sock --mysql-db=test --tables=1 --table-size=100000 --threads=1 --time=99 $SYSBEN_DIR/oltp_update_index.lua --report-interval=5 cleanup >> /dev/null
 sysbench --mysql-socket=$PSANDBOX_MYSQL_DIR/mysqld.sock --mysql-db=test --tables=1 --table-size=100000 --threads=1 --time=99 $SYSBEN_DIR/oltp_update_index.lua --report-interval=5 prepare >> /dev/null
+fi
+
 if [[ $1 == 1 ]]; then
     normal > $LOG_DIR/c4/no_psandbox.log
     #normal
