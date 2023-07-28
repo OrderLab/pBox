@@ -10,7 +10,9 @@ This documentation is written to use the pBox and reproduce the experiment resul
 - [Getting Started & Installing pBox Kernel](#getting-started--installing-pbox-kernel-30-human-minutes--40-compute-minutes)
 - [Running Basic Microbenchmark Experiment](#running-basic-microbenchmark-experiment-5-minutes)
 - [Build Applications & Test Frameworks](#build-applications--test-frameworks-approximately-30-minutes)
-- [Running the Mitigation Experiment for Figure 11](#running-the-mitigation-experiment-for-figure-11-30-human-minutes-and-approximately-12-compute-hours)
+- [Running the Mitigation Experiment for Figure 11](#running-the-mitigation-experiment-for-figure-11-30-human-minutes-and-approximately-8-compute-hours)
+     - [Running the pbox mitigation experiment on each real-world case](#running-the-pbox-mitigation-experiment-on-each-real-world-case)
+     - [Running the comparison experiment on Partis and Retro](#running-the-comparison-experiment-on-partis-and-retro)
 - [Running the Sensitivity experiment for Figure 12](#running-the-sensitivity-experiment-for-figure-12-approximately-2-hours)
 - [Running the Performance Overhead Experiment for Figure 13](#running-the-performance-overhead-experiment-for-figure-13-approximately-15-hours)
 
@@ -99,28 +101,24 @@ This instruction describes how to use pbox on Cloudlab. We will use Utah xl170 m
          * **Note**: the host name must be client1, client2 and client3. A different name would cause failure when running the experiment on Apache and varnish
     
 
-## Running the mitigation experiment for Figure 11 (30 human minutes and approximately 12 compute hours)
+## Running the mitigation experiment for Figure 11 (30 human minutes and approximately 8 compute hours)
 This experiment measures the effectiveness of pbox on 16 cases in paper's table 3 and compares pbox with four performance interference
 mitigation solutions: cgroup, PARTIES, Retro and DARC. The experiment reproduces the result in Figure 11. 
 
 ### Running the pbox mitigation experiment on each real-world case
 1. Running the vanilla Linux, pbox and cgroup.
     * `cd ~/pbox`
-    * To run all the cases, use `/script/run_mitigate.py.` To specify one case, use `./script/run_mitigate.py -i _case_id_`
+    * To run all the cases, use `/script/run_mitigate.py.` To run one case, use `./script/run_mitigate.py -i _case_id_`
     * The raw data is in `result/data/mitigation_pbox.csv`
-1. Plot the figure by running 
+1. Plot the figure by running `./script/cases/plot_eval_mitigation_pbox.py result/data/mitigation_pbox.csv -o fig11_half.eps`
 ### Running the comparison experiment on Partis and Retro
-1. Running the parties.
+1. Running the parties and Retro.
     * `cd ~/pbox`
-    * To run all the cases, use `/script/run_mitigate.py -t 1`. To specify one case, use `./script/run_mitigate.py -t 1 -i _case_id_`
-    * The raw data is in `result/data/mitigation_parties.csv.`
-1. Running the Retro.
-    * `cd ~/pbox`
-    * To run all the cases, use `/script/run_mitigate.py -t 2`. To specify one case, use `./script/run_mitigate.py -t 2 -i _case_id_`
-    * The raw data is in `result/data/mitigation_retro.csv.`
+    * To run all the cases, use `/script/run_mitigate.py -t 1`. To run one case, use `./script/run_mitigate.py -t 1 -i _case_id_`
+    * The raw data is in `result/data/eval_mitigation.csv.`
+ 1. Plot the figure by running `./script/cases/plot_eval_mitigation_comparsion.py result/data/eval_mitigation.csv -o fig11_half.eps` 
 
-**Note**: Some test results may differ a lot from the paper's figure due to performance variance. If you encounter a result different from the paper's figure, please check the raw data in the `result/data/eval_overhead.csv.` to find the problematic setting and rerun it instead of rerun the whole experiment.
-
+**Note**: Some test results may differ greatly from the paper's figure, as running one script would cause performance variance. If you encounter the issue, please check the raw data in the `result/data/mitigation_pbox.csv` or `result/data/eval_mitigation.csv.` to find the problematic experiment cases and rerun it instead of rerun the whole experiment.
 
 
 ## Running the Sensitivity Experiment for Figure 12 (approximately 2 hours)
@@ -150,6 +148,6 @@ This experiment measures the end-to-end throughput of pbox for all five systems 
     * To run one setting, use `./script/run_mitigate.py -n app_name -t threads -p 0 -r 0`
     * The raw data is in `result/data/` folder. The overall result is `result/data/eval_overhead.csv.` The result for each application is `overhead_appname.csv`
 1. Plot the figure by running the script `./script/sensitivity/plot_eval_overhead.py result/data/eval_overhead.csv -o fig12.eps`
-1. **Note**: Some test results may differ a lot from the paper's figure due to performance variance. If you encounter a result different from the paper's figure, please check the raw data in the `result/data/eval_overhead.csv.` to find the problematic setting and rerun it instead of rerun the whole experiment.
+1. **Note**: Some test results may differ greatly from the paper's figure due to performance variance. If you encounter the issue, please check the raw data in the `result/data/eval_overhead.csv.` to find the problematic setting and rerun it instead of rerun the whole experiment.
 
 
