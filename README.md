@@ -141,7 +141,8 @@ To ensure consistency for the artifact evaluation, we run pBox on **physical nod
                    User pbox
               ```
             * **Note**⚠️: the host name must be `client1`, `client2` and `client3`. A different name would cause failures when running the experiments on Apache and Varnish.
-            * **Note**⚠️:  please make sure that client1|2|3 are in known_hosts. This can be done by manually `ssh` into each client once from the server machine before running scripts
+            * **Note**⚠️: please copy the ssh public key from the server node to the clients' node. This can be done by `ssh` into each client from your own machine and add the server node's public key to the `~/.ssh/authorized_keys` file.
+            * **Note**⚠️: please make sure that client1|2|3 are in known_hosts. This can be done by manually `ssh` into each client once from the server machine before running scripts
         2. set the environment variable `SERVER_NODE` to store the server machine's public IP for clients to connect
             * Example: `echo 'export SERVER_NODE=c220g5-110990.wisc.cloudlab.us >> ~/.bashrc'`
             * **Note**⚠️: its value is passed remotely to clients. You only need to set it in the server machine.
