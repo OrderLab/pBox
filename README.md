@@ -155,9 +155,9 @@ This experiment measures the effectiveness of pBox on 16 cases in paper's table 
 
 1. Running the vanilla Linux, pbox and cgroup.
     * `cd ~/pbox`
-    * To run all the cases, use `/script/run_mitigate.py` 
-      * To run one case, use `./script/run_mitigate.py -i <case_id>`
-    * The raw data will be in `result/data/mitigation_pbox.csv`
+    * To run all the cases, use `/script/run_mitigation.py` 
+      * To run one case, use `./script/run_mitigation.py -i <case_id>`
+    * The raw data will be in `result/data/mitigation_pbox.csv.`
 
 2. Plot the figure by running `./script/cases/plot_eval_mitigation_pbox.py result/data/mitigation_pbox.csv -o fig11_half.pdf`
 
@@ -165,8 +165,8 @@ This experiment measures the effectiveness of pBox on 16 cases in paper's table 
 
 1. Running the Parties and Retro.
     * `cd ~/pbox`
-    * To run all the cases, use `/script/run_mitigate.py -t 1`. 
-      * To run one case, use `./script/run_mitigate.py -t 1 -i <case_id>`
+    * To run all the cases, use `/script/run_mitigation.py -t 1`. 
+      * To run one case, use `./script/run_mitigation.py -t 1 -i <case_id>`
     * The raw data will be in `result/data/eval_mitigation.csv.`
 2. Plot the figure by running `./script/cases/plot_eval_mitigation_comparsion.py result/data/eval_mitigation.csv -o fig11_half.pdf` 
 
@@ -174,7 +174,7 @@ This experiment measures the effectiveness of pBox on 16 cases in paper's table 
 
 * Check the raw data in the `result/data/mitigation_pbox.csv` or `result/data/eval_mitigation.csv` to find the problematic data point and its cases number
 * Regenerate data point by running `./script/log_analyzer.py -i result/cases -o result/data/mitigation_pbox.csv -d 2 -t 2` for pbox mitigation experiment or `./script/log_analyzer.py -i result/cases -o result/data/eval_mitigation.csv -d 2 -t 5` for comparison experiment.
-* If the data is still incorrect, rerun the problematic case by running `./script/run_mitigate.py -t 1 -i <case_id>`.
+* If the data is still incorrect, rerun the problematic case by running `./script/run_mitigation.py -t 1 -i <case_id>`.
 
 ## Running the Sensitivity Experiment for Figure 12 (approximately 2 hours)
 
@@ -182,7 +182,7 @@ This experiment measures the sensitivity of isolation goals when creating a pbox
 1. Running the experiment
     * `cd ~/pbox`
     * To run all the cases, use `./script/run_sensitivity.py -i 0`. 
-      * To specify one case, use `./script/run_mitigate.py -i <case_id>`
+      * To specify one case, use `./script/gate.py -i <case_id>`
     * The raw data is in `result/data/eval_sensitivity.csv`
 2. Plot the figure by running `./script/sensitivity/plot_eval_rule_sensitivity.py result/data/eval_sensitivity.csv -o fig12.pdf`
 3. **Note**⚠️: Some cases' results may differ from the paper's figure due to performance variance. If you encounter the issues, follow the debugging process above. The command to regenerate data for sensitivity experiment is `./script/log_analyzer.py -i result/sensitivity -o result/data/eval_sensitivity.csv -d 2 -t 3`
@@ -203,7 +203,7 @@ This experiment measures the end-to-end throughput of pbox for all five systems 
                                   0: no pbox, 1: pbox
       
       ```
-    * To run one setting, use `./script/run_mitigate.py -n app_name -t threads -p 0 -r 0`
+    * To run one setting, use `./script/run_overhead.py -n app_name -t threads -p 0 -r 0`
     * The raw data is in `result/data/` folder. The overall result is `result/data/eval_overhead.csv.` The result for each application is `overhead_appname.csv`
 2. Plot the figure by running the script `./script/overhead/plot_eval_overhead.py result/data/eval_overhead.csv -o fig12.pdf`
 3. **Note**⚠️: Some test results may differ greatly from the paper's figure due to performance variance. If you encounter the issue, please follow the debugging process above. The command to regenerate data for overhead experiment is `./script/log_analyzer.py -i result/overhead -o result/data/eval_overhead.csv -d 2 -t 7`
