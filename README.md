@@ -53,6 +53,7 @@ To ensure consistency for the artifact evaluation, we run pBox on **physical nod
 1. Instantiate a CloudLab node.
     * [Login to Cloudlab](https://www.cloudlab.us/login.php).
     * Instantiate a node with our [cloudlab profile](https://www.cloudlab.us/p/FailureDetection/pbox).
+    * **Note**: If you encounter "No site mapping for node order0 ()." error, you can try to instantiate our profile with m510 node
 
 2. Login to the node using ssh
 
@@ -182,7 +183,7 @@ This experiment measures the sensitivity of isolation goals when creating a pbox
 1. Running the experiment
     * `cd ~/pbox`
     * To run all the cases, use `./script/run_sensitivity.py -i 0`. 
-      * To specify one case, use `./script/gate.py -i <case_id>`
+      * To specify one case, use `./script/run_sensitivity.py -i <case_id>`
     * The raw data is in `result/data/eval_sensitivity.csv`
 2. Plot the figure by running `./script/sensitivity/plot_eval_rule_sensitivity.py result/data/eval_sensitivity.csv -o fig12.pdf`
 3. **Note**⚠️: Some cases' results may differ from the paper's figure due to performance variance. If you encounter the issues, follow the debugging process above. The command to regenerate data for sensitivity experiment is `./script/log_analyzer.py -i result/sensitivity -o result/data/eval_sensitivity.csv -d 2 -t 3`
