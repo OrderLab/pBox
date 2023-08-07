@@ -247,10 +247,10 @@ def analyzer_memcached(path,file):
     for line in i_file:
         result = read_regex.search(line)
         if result:
-            read_avg = float(result.group().split()[1])
+            mem_read_avg = float(result.group().split()[1])
         result = write_regex.search(line)
         if result:
-            write_avg = float(result.group().split()[1])
+            mem_write_avg = float(result.group().split()[1])
     return write_avg*0.1 + read_avg * 0.9
 
 def average_analyzer(args):
@@ -263,7 +263,7 @@ def average_analyzer(args):
                 path = args.input + "/" + dir_name
                 if os.path.isdir(path):
                     id = dir_name[1:]
-                    row = [id,dir_name]
+                    row = [id,dir_name,0,0,0,0]
                     if dir_name in apache_cases or dir_name in memcached_cases:
                         for file in os.listdir(path):
                             if file == "no_interference.log":
@@ -274,19 +274,19 @@ def average_analyzer(args):
                                 row.insert(2,normal_latencys)
                             elif file == "no_psandbox.log":
                                 if dir_name in memcached_cases:
-                                    normal_latencys = analyzer_memcached(path,file)
+                                    interference_latencys = analyzer_memcached(path,file)
                                 else:
                                     interference_latencys = analyzer_apache(path,file)
                                 row.insert(3,interference_latencys)
                             elif file == "cgroup.log":
                                 if dir_name in memcached_cases:
-                                    normal_latencys = analyzer_memcached(path,file)
+                                    cgroup_latencys = analyzer_memcached(path,file)
                                 else:
                                     cgroup_latencys = analyzer_apache(path,file)
                                 row.insert(4,cgroup_latencys)
                             elif file == "psandbox.log":
                                 if dir_name in memcached_cases:
-                                    normal_latencys = analyzer_memcached(path,file)
+                                    psandbox_latencys = analyzer_memcached(path,file)
                                 else:
                                     psandbox_latencys = analyzer_apache(path,file)
                                 row.insert(5,psandbox_latencys)
@@ -317,7 +317,7 @@ def average_analyzer(args):
                                 row.insert(5,psandbox_latency[1])
                     csvwriter.writerow(row)
         elif args.depth == 1:
-            row = [args.input]
+            row = [id,args.input,0,0,0,0]
             for file in os.listdir(args.input):
                 if (file == "no_psandbox.log"):
                     if dir_name == "c6":
@@ -360,7 +360,7 @@ def comparsion_analyzer(args):
                 path = args.input + "/" + dir_name
                 if os.path.isdir(path):
                     id = dir_name[1:]
-                    row = [id,dir_name]
+                    row = [id,dir_name,0,0,0,0,0,0,0,0]
                     if dir_name in apache_cases or dir_name in memcached_cases:
                         for file in os.listdir(path):
                             if file == "no_interference.log":
@@ -462,7 +462,7 @@ def comparsion_analyzer(args):
                                     row.insert(8,psandbox_latency[1])
                     csvwriter.writerow(row)
         elif args.depth == 1:
-            row = [args.input]
+            row = [id,args.input,0,0,0,0,0,0,0,0]
             for file in os.listdir(args.input):
                 if (file == "parties_baseline.log"):
                     if "c6" in args.input:
