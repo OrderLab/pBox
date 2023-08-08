@@ -62,7 +62,8 @@ function parties {
   for T in $TLIST; do (echo "$T") | sudo tee /sys/fs/cgroup/cpuset/hu_back_1/tasks; done
   sleep 5
   echo "interference" &>> $LOG_DIR/c1/front_1/parties.log
-  sudo ../../comparsion/parties_for_native.py $LOG_DIR/c1/ &
+  core=$(nproc --all)
+  sudo ../../comparsion/parties_for_native.py $LOG_DIR/c1/ $core &
   sleep 90
   echo "interference end" &>> $LOG_DIR/c1/front_1/parties.log
   sleep 20
@@ -120,11 +121,13 @@ elif [[ $1 == 6 ]]; then
   sudo cgdelete -g cpuset:/hu_front_1
   sudo cgcreate -g cpuset:/hu_front_1
   echo "0" | sudo tee /sys/fs/cgroup/cpuset/hu_front_1/cpuset.mems
-  echo "0-19" | sudo tee /sys/fs/cgroup/cpuset/hu_front_1/cpuset.cpus
+  core=$(nproc --all)
+  core=$(( core - 1))
+  echo "0-$core" | sudo tee /sys/fs/cgroup/cpuset/hu_front_1/cpuset.cpus
   sudo cgdelete -g cpuset:/hu_back_1
   sudo cgcreate -g cpuset:/hu_back_1
   echo "0" | sudo tee /sys/fs/cgroup/cpuset/hu_back_1/cpuset.mems
-  echo "0-19" | sudo tee /sys/fs/cgroup/cpuset/hu_back_1/cpuset.cpus
+  echo "0-$core" | sudo tee /sys/fs/cgroup/cpuset/hu_back_1/cpuset.cpus
   cp ../../libpsandbox.so $PSANDBOXDIR/build/libs/libpsandbox.so
 elif [[ $1 == 7 ]]; then
   echo "run c1 parties normal"

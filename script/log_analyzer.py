@@ -496,6 +496,7 @@ def sentivity_result(args):
             for dir_name in os.listdir(args.input):
                 path = args.input + "/" + dir_name
                 if os.path.isdir(path):
+                    row = [None] * 8
                     row = [dir_name]
                     for index,file in enumerate(sensitivity_logs):
                         normal_latencys = analyzer_mysql(path,file,0)

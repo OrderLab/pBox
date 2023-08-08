@@ -79,7 +79,8 @@ function parties {
   done
   sleep 5
   echo "interference" >> $LOG_DIR/c3/front_1/parties.log 
-  sudo ../../comparsion/parties_for_native.py $LOG_DIR/c3/ &
+  core=$(nproc --all)
+  sudo ../../comparsion/parties_for_native.py $LOG_DIR/c3/ $core &
   sleep 100
   echo "interference end" >> $LOG_DIR/c3/front_1/parties.log
   sleep 20
@@ -165,14 +166,16 @@ elif [[ $1 == 6 ]]; then
   echo "run c3 parties"
   sudo cgdelete -g cpuset:/hu_front_1
   sudo cgcreate -g cpuset:/hu_front_1
+  core=$(nproc --all)
+  core=$(( core - 1))
   echo "0" | sudo tee /sys/fs/cgroup/cpuset/hu_front_1/cpuset.mems
-  echo "0-19" | sudo tee /sys/fs/cgroup/cpuset/hu_front_1/cpuset.cpus
+  echo "0-$core" | sudo tee /sys/fs/cgroup/cpuset/hu_front_1/cpuset.cpus
   for i in {2..6}
   do
     sudo cgdelete -g cpuset:/hu_back_$i
     sudo cgcreate -g cpuset:/hu_back_$i
     echo "0" | sudo tee /sys/fs/cgroup/cpuset/hu_back_$i/cpuset.mems
-    echo "0-19" | sudo tee /sys/fs/cgroup/cpuset/hu_back_$i/cpuset.cpus
+    echo "0-$core" | sudo tee /sys/fs/cgroup/cpuset/hu_back_$i/cpuset.cpus
   done
 
   cp ../../libpsandbox.so $PSANDBOXDIR/build/libs/libpsandbox.so

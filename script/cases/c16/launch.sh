@@ -47,7 +47,8 @@ function parties {
   for T in $TLIST; do (echo "$T") | sudo tee /sys/fs/cgroup/cpuset/hu_front_1/tasks; done
   sleep 5
   mutilate -s 127.0.0.1:11211 -u 0.1 -T 8 -t 60
-  sudo ../../comparsion/parties_for_native.py $LOG_DIR/c16/ &
+  core=$(nproc --all)
+  sudo ../../comparsion/parties_for_native.py $LOG_DIR/c16/ $core &
   pkill memcached
   sleep 5
 
@@ -81,16 +82,18 @@ elif [[ $1 == 6 ]]; then
   echo "run c10 parties"
   sudo cgdelete -g cpuset:/hu_front_1
   sudo cgcreate -g cpuset:/hu_front_1
+  core=$(nproc --all)
+  core=$(( core - 1))
   echo "0" | sudo tee /sys/fs/cgroup/cpuset/hu_front_1/cpuset.mems
-  echo "0-19" | sudo tee /sys/fs/cgroup/cpuset/hu_front_1/cpuset.cpus
+  echo "0-$core" | sudo tee /sys/fs/cgroup/cpuset/hu_front_1/cpuset.cpus
   sudo cgdelete -g cpuset:/hu_back_1
   sudo cgcreate -g cpuset:/hu_back_1
   echo "0" | sudo tee /sys/fs/cgroup/cpuset/hu_back_1/cpuset.mems
-  echo "0-19" | sudo tee /sys/fs/cgroup/cpuset/hu_back_1/cpuset.cpus
+  echo "0-$core" | sudo tee /sys/fs/cgroup/cpuset/hu_back_1/cpuset.cpus
   sudo cgdelete -g cpuset:/hu_front_2
   sudo cgcreate -g cpuset:/hu_front_2
   echo "0" | sudo tee /sys/fs/cgroup/cpuset/hu_front_2/cpuset.mems
-  echo "0-19" | sudo tee /sys/fs/cgroup/cpuset/hu_front_2/cpuset.cpus
+  echo "0-$core" | sudo tee /sys/fs/cgroup/cpuset/hu_front_2/cpuset.cpus
   cp ../../libpsandbox.so $PSANDBOXDIR/build/libs/libpsandbox.so
 elif [[ $1 == 7 ]]; then
   echo "run c16 parties baseline"

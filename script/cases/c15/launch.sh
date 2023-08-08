@@ -54,7 +54,8 @@ function parties {
     ab -s 10 -t 90 -n 50000000 -c 16 http://127.0.0.1:8081/index.html > $LOG_DIR/c15/parties.log &
     TLIST=$(ps -e -T | grep "varnish" | awk '{print $2}' | sort -h)
     for T in $TLIST; do echo "$T" | sudo tee /sys/fs/cgroup/cpuset/hu_apache_1/tasks; done >> /dev/null
-    sudo ../../comparsion/parties_for_native.py $LOG_DIR/c15/ &
+    core=$(nproc --all)
+    sudo ../../comparsion/parties_for_native.py $LOG_DIR/c15/ $core &
     sleep 95
     sudo pkill -f parties_for_native.py
 }
@@ -87,16 +88,18 @@ elif [[ $1 == 6 ]]; then
     echo "run c15 parties"
     sudo cgdelete -g cpuset:/hu_apache_1
     sudo cgcreate -g cpuset:/hu_apache_1
+    core=$(nproc --all)
+    core=$(( core - 1))
     echo "0" | sudo tee /sys/fs/cgroup/cpuset/hu_apache_1/cpuset.mems
-    echo "0-19" | sudo tee /sys/fs/cgroup/cpuset/hu_apache_1/cpuset.cpus
+    echo "0-$core" | sudo tee /sys/fs/cgroup/cpuset/hu_apache_1/cpuset.cpus
     sudo cgdelete -g cpuset:/hu_apache_2
     sudo cgcreate -g cpuset:/hu_apache_2
     echo "0" | sudo tee /sys/fs/cgroup/cpuset/hu_apache_2/cpuset.mems
-    echo "0-19" | sudo tee /sys/fs/cgroup/cpuset/hu_apache_2/cpuset.cpus
+    echo "0-$core" | sudo tee /sys/fs/cgroup/cpuset/hu_apache_2/cpuset.cpus
     sudo cgdelete -g cpuset:/hu_apache_3
     sudo cgcreate -g cpuset:/hu_apache_3
     echo "0" | sudo tee /sys/fs/cgroup/cpuset/hu_apache_3/cpuset.mems
-    echo "0-19" | sudo tee /sys/fs/cgroup/cpuset/hu_apache_3/cpuset.cpus
+    echo "0-$core" | sudo tee /sys/fs/cgroup/cpuset/hu_apache_3/cpuset.cpus
     cp ../../libpsandbox.so $PSANDBOXDIR/build/libs/libpsandbox.so
 elif [[ $1 == 7 ]]; then
     echo "run c15 parties baseline"

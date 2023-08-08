@@ -8,16 +8,20 @@ import collections
 import threading
 import subprocess
 import re
+import argparse
 
+parser = argparse.ArgumentParser()
+parser.add_argument('-c','--cores', default = 10 , type=int, help="the number of cores")
 # QoS target of each application, in nanoseconds.
 QOS = {"front_1": 15000000, "front_2": 15000000, "pbench_1": 15000000,"back_1": 500000000000, "back_2":500000000000, "back_3":500000000000, "back_4":500000000000, "back_5":500000000000, "back_6":500000000000, 'apache_1':100000,'apache_2':100000,'apache_3':1000000, 'apache_4':1000000}
 
 CONFIG = './config.txt' # default path to the input config.txt file
 LOG = "./"
+cores = 8
 if (len(sys.argv) > 1):
    LOG = sys.argv[1]
 if (len(sys.argv) > 2):
-   CONFIG = sys.argv[2]
+   cores = sys.argv[2]
 
 median_regex = re.compile(
     ': [0-9]*\.[0-9]* '
@@ -27,6 +31,7 @@ latency_regex = re.compile(
     'lat [0-9]*\.[0-9]* '
 )
 
+args = parser.parse_args()
 INTERVAL  = 1  # Frequency of monitoring, unit is secondq
 TIMELIMIT = 250   # How long to run this controller, unit is in second. 
 REST      = 100
@@ -34,8 +39,8 @@ NUM       = 0    # Number of colocated applications
 APP       = [None for i in range(10)] # Application names
 IP        = [None for i in range(10)] # IP of clients that run applications
 QoS       = [None for i in range(10)] # Target QoS of each application
-ECORES    = [i for i in range(0,20,1)] # unallocated cores
-CORES     = [None for i in range(10)] # CPU allocation
+ECORES    = [i for i in range(0,2*cores,1)] # unallocated cores
+CORES     = [None for i in range(cores)] # CPU allocation
 LOAD      = []                        
 FREQ      = [2200 for i in range(10)] # Frequency allocation
 EWAY      = 0                          # unallocated ways
