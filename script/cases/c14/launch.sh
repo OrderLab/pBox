@@ -39,7 +39,6 @@ function psandbox {
     echo "start psandbox"
     ssh client1 "$NOISE" > /dev/null 2>&1 &
     ssh client2 "$NOISE" > /dev/null 2>&1 &
-    ssh client3 "$NOISE" > /dev/null 2>&1 &
     ./victim.sh > $LOG_DIR/c14/psandbox.log
     sleep 1
     pkill httpd
@@ -188,10 +187,14 @@ elif [[ $1 == 6 ]]; then
     mkdir -p $LOG_DIR/c14/apache_1
     mkdir -p $LOG_DIR/c14/apache_2
     mkdir -p $LOG_DIR/c14/apache_3
+    $PSANDBOX_VARNISH_DIR/../httpd/dist/bin/apachectl -k start
+    varnishd -a :8081 -f $PSANDBOX_VARNISH_DIR/../script/default.vcl -s malloc,256m -p thread_pools=1 -p thread_pool_min=1 -p thread_pool_max=3 -p thread_pool_timeout=10
     parties
 elif [[ $1 == 7 ]]; then
     parties_normal
 elif [[ $1 == 8 ]]; then
+    $PSANDBOX_VARNISH_DIR/../httpd/dist/bin/apachectl -k start
+    varnishd -a :8081 -f $PSANDBOX_VARNISH_DIR/../script/default.vcl -s malloc,256m -p thread_pools=1 -p thread_pool_min=1 -p thread_pool_max=3 -p thread_pool_timeout=10
     retro
 elif [[ $1 == 9 ]]; then
     ${PSP_DIR}/sosp_aec/psandbox_script/varnish_server.sh
