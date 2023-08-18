@@ -11,7 +11,7 @@ parser.add_argument('-i','--index', default = 0 , type=int, help="the case index
 def main(args):
     if args.index == 0:
         for dir_name in os.listdir("./script/sensitivity"):
-            if os.path.isdir(path):
+            if os.path.isdir("./script/sensitivity/" + dir_name):
                 cmd = "./script/run_experiment.py -i script/sensitivity/" + dir_name 
                 os.system(cmd)
                 cmd = "cp -r result/cases/" + dir_name + "/no_psandbox.log result/sensitivity/" + dir_name
