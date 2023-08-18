@@ -11,10 +11,11 @@ parser.add_argument('-i','--index', default = 0 , type=int, help="the case index
 def main(args):
     if args.index == 0:
         for dir_name in os.listdir("./script/sensitivity"):
-            cmd = "./script/run_experiment.py -i script/sensitivity/" + dir_name 
-            os.system(cmd)
-            cmd = "cp -r result/cases/" + dir_name + "/no_psandbox.log result/sensitivity/" + dir_name
-            os.system(cmd)
+            if os.path.isdir(path):
+                cmd = "./script/run_experiment.py -i script/sensitivity/" + dir_name 
+                os.system(cmd)
+                cmd = "cp -r result/cases/" + dir_name + "/no_psandbox.log result/sensitivity/" + dir_name
+                os.system(cmd)
         cmd = "./script/log_analyzer.py -i result/sensitivity -o result/data/eval_sensitivity.csv -d 2 -t 3"
         os.system(cmd)
     else:
