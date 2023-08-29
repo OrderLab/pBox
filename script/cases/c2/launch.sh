@@ -8,9 +8,9 @@ if [ $# -eq 0 ]
 fi
 
 function normal {
-  sysbench --mysql-socket=$PSANDBOX_MYSQL_DIR/mysqld.sock --mysql-db=test --tables=64 --table-size=1000 --threads=1 --time=90   --percentile=50 $SYSBEN_DIR/oltp_insert.lua --report-interval=5 cleanup >> /dev/null
-  sysbench --mysql-socket=$PSANDBOX_MYSQL_DIR/mysqld.sock --mysql-db=test --tables=64 --table-size=1000 --threads=1 --time=90   --percentile=50 $SYSBEN_DIR/oltp_insert.lua --report-interval=5 prepare >> /dev/null
-  sysbench --mysql-socket=$PSANDBOX_MYSQL_DIR/mysqld.sock --mysql-db=test --tables=64 --table-size=1000 --threads=64 --time=107  --percentile=50 $SYSBEN_DIR/oltp_insert.lua --report-interval=10 run &
+  sysbench --mysql-socket=$PSANDBOX_MYSQL_DIR/mysqld.sock --mysql-db=test --tables=64 --table-size=1000 --threads=1 --time=90   --percentile=95 $SYSBEN_DIR/oltp_insert.lua --report-interval=5 cleanup >> /dev/null
+  sysbench --mysql-socket=$PSANDBOX_MYSQL_DIR/mysqld.sock --mysql-db=test --tables=64 --table-size=1000 --threads=1 --time=90   --percentile=95 $SYSBEN_DIR/oltp_insert.lua --report-interval=5 prepare >> /dev/null
+  sysbench --mysql-socket=$PSANDBOX_MYSQL_DIR/mysqld.sock --mysql-db=test --tables=64 --table-size=1000 --threads=64 --time=107  --percentile=95 $SYSBEN_DIR/oltp_insert.lua --report-interval=10 run &
   sleep 11
   echo "normal"
   sleep 90
@@ -21,8 +21,8 @@ function normal {
   mysqld --defaults-file=../mysql.cnf &
   sleep 5
   sysbench --mysql-socket=$PSANDBOX_MYSQL_DIR/mysqld.sock --mysql-db=test --tables=64 --table-size=1000 --threads=1 --time=95 --secondary=on $SYSBEN_DIR/oltp_insert.lua  cleanup >> /dev/null
-  sysbench --mysql-socket=$PSANDBOX_MYSQL_DIR/mysqld.sock --mysql-db=test --tables=64 --table-size=1000 --threads=1 --time=90 --secondary=on --percentile=50 $SYSBEN_DIR/oltp_insert.lua prepare >> /dev/null
-  sysbench --mysql-socket=$PSANDBOX_MYSQL_DIR/mysqld.sock --mysql-db=test --tables=64 --table-size=1000 --threads=64 --time=107 --secondary=on --percentile=50 $SYSBEN_DIR/oltp_insert.lua --report-interval=10 run &
+  sysbench --mysql-socket=$PSANDBOX_MYSQL_DIR/mysqld.sock --mysql-db=test --tables=64 --table-size=1000 --threads=1 --time=90 --secondary=on --percentile=95 $SYSBEN_DIR/oltp_insert.lua prepare >> /dev/null
+  sysbench --mysql-socket=$PSANDBOX_MYSQL_DIR/mysqld.sock --mysql-db=test --tables=64 --table-size=1000 --threads=64 --time=107 --secondary=on --percentile=95 $SYSBEN_DIR/oltp_insert.lua --report-interval=10 run &
   sleep 11
   echo "interference" 
   sleep 90
@@ -31,9 +31,9 @@ function normal {
 }
 
 function cgroup {
-  sysbench --mysql-socket=$PSANDBOX_MYSQL_DIR/mysqld.sock  --mysql-db=test --tables=64 --table-size=1000 --threads=1 --time=95  --percentile=50 --secondary=on $SYSBEN_DIR/oltp_insert.lua cleanup >> /dev/null
-  sysbench --mysql-socket=$PSANDBOX_MYSQL_DIR/mysqld.sock  --mysql-db=test --tables=64 --table-size=1000 --threads=1 --time=90  --percentile=50 --secondary=on $SYSBEN_DIR/oltp_insert.lua prepare >> /dev/null
-  sysbench --mysql-socket=$PSANDBOX_MYSQL_DIR/mysqld.sock  --mysql-db=test --tables=64 --table-size=1000 --threads=64 --time=107  --percentile=50 --secondary=on $SYSBEN_DIR/oltp_insert.lua --report-interval=10 run &
+  sysbench --mysql-socket=$PSANDBOX_MYSQL_DIR/mysqld.sock  --mysql-db=test --tables=64 --table-size=1000 --threads=1 --time=95  --percentile=95 --secondary=on $SYSBEN_DIR/oltp_insert.lua cleanup >> /dev/null
+  sysbench --mysql-socket=$PSANDBOX_MYSQL_DIR/mysqld.sock  --mysql-db=test --tables=64 --table-size=1000 --threads=1 --time=90  --percentile=95 --secondary=on $SYSBEN_DIR/oltp_insert.lua prepare >> /dev/null
+  sysbench --mysql-socket=$PSANDBOX_MYSQL_DIR/mysqld.sock  --mysql-db=test --tables=64 --table-size=1000 --threads=64 --time=107  --percentile=95 --secondary=on $SYSBEN_DIR/oltp_insert.lua --report-interval=10 run &
   sleep 1
   N=$(ps -e -T | grep mysqld | awk '{print $2}' | sort -h | wc -l)
   N=$((N-63))
@@ -47,7 +47,7 @@ function cgroup {
 }
 
 function psandbox {
-  sysbench --mysql-socket=$PSANDBOX_MYSQL_DIR/mysqld.sock --mysql-db=test --tables=64 --table-size=1000 --threads=62 --time=217 --secondary=on  --percentile=50 $SYSBEN_DIR/oltp_insert.lua --report-interval=10 run &
+  sysbench --mysql-socket=$PSANDBOX_MYSQL_DIR/mysqld.sock --mysql-db=test --tables=64 --table-size=1000 --threads=62 --time=217 --secondary=on  --percentile=95 $SYSBEN_DIR/oltp_insert.lua --report-interval=10 run &
   sleep 60
   echo "interference"
   sleep 90
@@ -56,13 +56,13 @@ function psandbox {
 }
 
 function parties {
-  sysbench --mysql-socket=$PSANDBOX_MYSQL_DIR/mysqld.sock --mysql-db=test --tables=64 --table-size=1000 --threads=32 --time=220 --secondary=on  --percentile=50 $SYSBEN_DIR/oltp_insert.lua --report-interval=1 run >> $LOG_DIR/c2/front_1/parties.log & 
+  sysbench --mysql-socket=$PSANDBOX_MYSQL_DIR/mysqld.sock --mysql-db=test --tables=64 --table-size=1000 --threads=32 --time=220 --secondary=on  --percentile=95 $SYSBEN_DIR/oltp_insert.lua --report-interval=1 run >> $LOG_DIR/c2/front_1/parties.log & 
   sleep 1
   N=$(ps -e -T | grep mysqld | awk '{print $2}' | sort -h | wc -l)
   N=$((N-31))
   TLIST=$(ps -e -T | grep mysqld | awk '{print $2}' | sort -h | tail -n +${N})
   for T in $TLIST; do (echo "$T") | sudo tee /sys/fs/cgroup/cpuset/hu_front_1/tasks; done >> /dev/null
-  sysbench --mysql-socket=$PSANDBOX_MYSQL_DIR/mysqld.sock --mysql-db=test --tables=64 --table-size=1000 --threads=32 --time=217 --secondary=on  --percentile=50 $SYSBEN_DIR/oltp_insert.lua --report-interval=1 run >> $LOG_DIR/c2/front_2/parties.log & 
+  sysbench --mysql-socket=$PSANDBOX_MYSQL_DIR/mysqld.sock --mysql-db=test --tables=64 --table-size=1000 --threads=32 --time=217 --secondary=on  --percentile=95 $SYSBEN_DIR/oltp_insert.lua --report-interval=1 run >> $LOG_DIR/c2/front_2/parties.log & 
   sleep 1
   N=$(ps -e -T | grep mysqld | awk '{print $2}' | sort -h | wc -l)
   N=$((N-31))
@@ -79,10 +79,10 @@ function parties {
 }
 
 function parties_normal {
-  sysbench --mysql-socket=$PSANDBOX_MYSQL_DIR/mysqld.sock --mysql-db=test --tables=64 --table-size=1000 --threads=1 --time=90   --percentile=50 $SYSBEN_DIR/oltp_insert.lua --report-interval=5 cleanup >> /dev/null
-  sysbench --mysql-socket=$PSANDBOX_MYSQL_DIR/mysqld.sock --mysql-db=test --tables=64 --table-size=1000 --threads=1 --time=90   --percentile=50 $SYSBEN_DIR/oltp_insert.lua --report-interval=5 prepare >> /dev/null
-  sysbench --mysql-socket=$PSANDBOX_MYSQL_DIR/mysqld.sock --mysql-db=test --tables=64 --table-size=1000 --threads=32 --time=107  --percentile=50 $SYSBEN_DIR/oltp_insert.lua --report-interval=10 run &
-  sysbench --mysql-socket=$PSANDBOX_MYSQL_DIR/mysqld.sock --mysql-db=test --tables=64 --table-size=1000 --threads=32 --time=107  --percentile=50 $SYSBEN_DIR/oltp_insert.lua  run &
+  sysbench --mysql-socket=$PSANDBOX_MYSQL_DIR/mysqld.sock --mysql-db=test --tables=64 --table-size=1000 --threads=1 --time=90   --percentile=95 $SYSBEN_DIR/oltp_insert.lua --report-interval=5 cleanup >> /dev/null
+  sysbench --mysql-socket=$PSANDBOX_MYSQL_DIR/mysqld.sock --mysql-db=test --tables=64 --table-size=1000 --threads=1 --time=90   --percentile=95 $SYSBEN_DIR/oltp_insert.lua --report-interval=5 prepare >> /dev/null
+  sysbench --mysql-socket=$PSANDBOX_MYSQL_DIR/mysqld.sock --mysql-db=test --tables=64 --table-size=1000 --threads=32 --time=107  --percentile=95 $SYSBEN_DIR/oltp_insert.lua --report-interval=10 run &
+  sysbench --mysql-socket=$PSANDBOX_MYSQL_DIR/mysqld.sock --mysql-db=test --tables=64 --table-size=1000 --threads=32 --time=107  --percentile=95 $SYSBEN_DIR/oltp_insert.lua  run &
   sleep 11
   echo "normal"
   sleep 90
@@ -93,9 +93,9 @@ function parties_normal {
   mysqld --defaults-file=../mysql.cnf &
   sleep 5
   sysbench --mysql-socket=$PSANDBOX_MYSQL_DIR/mysqld.sock --mysql-db=test --tables=64 --table-size=1000 --threads=1 --time=95 --secondary=on $SYSBEN_DIR/oltp_insert.lua  cleanup >> /dev/null
-  sysbench --mysql-socket=$PSANDBOX_MYSQL_DIR/mysqld.sock --mysql-db=test --tables=64 --table-size=1000 --threads=1 --time=90 --secondary=on --percentile=50 $SYSBEN_DIR/oltp_insert.lua prepare >> /dev/null
-  sysbench --mysql-socket=$PSANDBOX_MYSQL_DIR/mysqld.sock --mysql-db=test --tables=64 --table-size=1000 --threads=32 --time=107 --secondary=on --percentile=50 $SYSBEN_DIR/oltp_insert.lua --report-interval=10 run &
-  sysbench --mysql-socket=$PSANDBOX_MYSQL_DIR/mysqld.sock --mysql-db=test --tables=64 --table-size=1000 --threads=32 --time=107 --secondary=on --percentile=50 $SYSBEN_DIR/oltp_insert.lua  run &
+  sysbench --mysql-socket=$PSANDBOX_MYSQL_DIR/mysqld.sock --mysql-db=test --tables=64 --table-size=1000 --threads=1 --time=90 --secondary=on --percentile=95 $SYSBEN_DIR/oltp_insert.lua prepare >> /dev/null
+  sysbench --mysql-socket=$PSANDBOX_MYSQL_DIR/mysqld.sock --mysql-db=test --tables=64 --table-size=1000 --threads=32 --time=107 --secondary=on --percentile=95 $SYSBEN_DIR/oltp_insert.lua --report-interval=10 run &
+  sysbench --mysql-socket=$PSANDBOX_MYSQL_DIR/mysqld.sock --mysql-db=test --tables=64 --table-size=1000 --threads=32 --time=107 --secondary=on --percentile=95 $SYSBEN_DIR/oltp_insert.lua  run &
   sleep 11
   echo "interference" 
   sleep 90

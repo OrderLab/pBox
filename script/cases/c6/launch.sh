@@ -3,13 +3,13 @@
 LOG_DIR="$(pwd)/../../../result/cases/"
 
 function normal {
-  ./pgbench postgres -h /tmp -P 10 -c 1 -T 107 -f read.txt &>> $LOG_DIR/c6/no_psandbox.log &
+  ./pgbench postgres -h /tmp -P 10 -c 1 -T 107 -f read.txt  &>> $LOG_DIR/c6/no_psandbox.log &
   sleep 11
   echo "normal" &>> $LOG_DIR/c6/no_psandbox.log
   sleep 90
   echo "normal end"  &>> $LOG_DIR/c6/no_psandbox.log
   sleep 10
-  ./pgbench postgres -h /tmp -P 10 -c 1 -T 137 -f read.txt &>> $LOG_DIR/c6/no_psandbox.log &
+  ./pgbench postgres -h /tmp -P 10 -c 1 -T 137 -f read.txt  &>> $LOG_DIR/c6/no_psandbox.log &
   sleep 1
   ./back.sh >> /dev/null &
   sleep 10
@@ -26,7 +26,7 @@ function cgroup {
   TLIST=$(ps -e -T | grep postgre | awk '{print $2}' | sort -h | tail -n +${N})
   for T in $TLIST; do echo "$T" | sudo tee /sys/fs/cgroup/cpu/cpuwrite/tasks; done >> /dev/null
   sleep 1
-  ./pgbench postgres -h /tmp  -P 10 -c 1 -T 137 -f read.txt &>> $LOG_DIR/c6/cgroup.log &
+  ./pgbench postgres -h /tmp  -P 10 -c 1 -T 137 -f read.txt  &>> $LOG_DIR/c6/cgroup.log &
   sleep 1
   N=$(ps -e -T | grep postgre | awk '{print $2}' | sort -h | wc -l)
   TLIST=$(ps -e -T | grep postgre | awk '{print $2}' | sort -h | tail -n +${N})
@@ -39,7 +39,7 @@ function cgroup {
 }
 
 function psandbox {
-  ./pgbench postgres -h /tmp -P 10 -c 1 -T 207 -f read.txt &>> $LOG_DIR/c6/psandbox.log &
+  ./pgbench postgres -h /tmp -P 10 -c 1 -T 207 -f read.txt  &>> $LOG_DIR/c6/psandbox.log &
   sleep 1
   ./back.sh >> /dev/null &
   sleep 60

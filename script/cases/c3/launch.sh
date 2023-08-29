@@ -8,7 +8,7 @@ if [ $# -eq 0 ]
 fi
 
 function normal {
-  sysbench --mysql-socket=$PSANDBOX_MYSQL_DIR/mysqld.sock --mysql-db=test --tables=1 --table-size=1000 --threads=1 --time=200  --percentile=50 --report-interval=10 $SYSBEN_DIR/oltp_point_select.lua run & 
+  sysbench --mysql-socket=$PSANDBOX_MYSQL_DIR/mysqld.sock --mysql-db=test --tables=1 --table-size=1000 --threads=1 --time=200  --percentile=95 --report-interval=10 $SYSBEN_DIR/oltp_point_select.lua run & 
   sleep 11
   echo "normal"
   sleep 90
@@ -26,7 +26,7 @@ function normal {
 }
 
 function cgroup {
-  sysbench --mysql-socket=$PSANDBOX_MYSQL_DIR/mysqld.sock --mysql-db=test --tables=1 --table-size=1000 --threads=1 --time=117 --percentile=50 $SYSBEN_DIR/oltp_point_select.lua --report-interval=10 run &
+  sysbench --mysql-socket=$PSANDBOX_MYSQL_DIR/mysqld.sock --mysql-db=test --tables=1 --table-size=1000 --threads=1 --time=117 --percentile=95 $SYSBEN_DIR/oltp_point_select.lua --report-interval=10 run &
   sleep 2
   N=$(ps -e -T | grep mysqld | awk '{print $2}' | sort -h | wc -l)
   N=$((N))
@@ -50,7 +50,7 @@ function cgroup {
 }
 
 function psandbox {
-  sysbench --mysql-socket=$PSANDBOX_MYSQL_DIR/mysqld.sock --mysql-db=test --tables=1 --table-size=1000 --threads=1 --time=117 --percentile=50 --report-interval=10  $SYSBEN_DIR/oltp_point_select.lua run & 
+  sysbench --mysql-socket=$PSANDBOX_MYSQL_DIR/mysqld.sock --mysql-db=test --tables=1 --table-size=1000 --threads=1 --time=117 --percentile=95 --report-interval=10  $SYSBEN_DIR/oltp_point_select.lua run & 
   sleep 1
   for i in {2..6}
   do
@@ -66,7 +66,7 @@ function psandbox {
 
 
 function parties {
-  sysbench --mysql-socket=$PSANDBOX_MYSQL_DIR/mysqld.sock --mysql-db=test --tables=1 --table-size=1000 --threads=1 --time=120  --percentile=50 --report-interval=1 $SYSBEN_DIR/oltp_point_select.lua run >> $LOG_DIR/c3/front_1/parties.log & 
+  sysbench --mysql-socket=$PSANDBOX_MYSQL_DIR/mysqld.sock --mysql-db=test --tables=1 --table-size=1000 --threads=1 --time=120  --percentile=95 --report-interval=1 $SYSBEN_DIR/oltp_point_select.lua run >> $LOG_DIR/c3/front_1/parties.log & 
   sleep 1
   TLIST=$(ps -e -T | grep mysqld | awk '{print $2}' | sort -h | tail -1)
   for T in $TLIST; do (echo "$T") | sudo tee /sys/fs/cgroup/cpuset/hu_front_1/tasks; done 
@@ -89,7 +89,7 @@ function parties {
 }
 
 function parties_normal {
-  sysbench --mysql-socket=$PSANDBOX_MYSQL_DIR/mysqld.sock --mysql-db=test --tables=1 --table-size=1000 --threads=1 --time=200  --percentile=50 --report-interval=10 $SYSBEN_DIR/oltp_point_select.lua run & 
+  sysbench --mysql-socket=$PSANDBOX_MYSQL_DIR/mysqld.sock --mysql-db=test --tables=1 --table-size=1000 --threads=1 --time=200  --percentile=95 --report-interval=10 $SYSBEN_DIR/oltp_point_select.lua run & 
   sleep 11
   echo "normal"
   sleep 90

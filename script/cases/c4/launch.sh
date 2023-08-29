@@ -17,7 +17,7 @@ function normal {
 }
 
 function cgroup {
-  sysbench --mysql-socket=$PSANDBOX_MYSQL_DIR/mysqld.sock --mysql-db=test --tables=1 --table-size=100000 --threads=1 --time=104 --percentile=50 $SYSBEN_DIR/oltp_update_index.lua --report-interval=10 run &
+  sysbench --mysql-socket=$PSANDBOX_MYSQL_DIR/mysqld.sock --mysql-db=test --tables=1 --table-size=100000 --threads=1 --time=104 --percentile=95 $SYSBEN_DIR/oltp_update_index.lua --report-interval=10 run &
   sleep 8
   N=$(ps -e -T | grep mysqld | awk '{print $2}' | sort -h | wc -l)
   N=$((N-4))
@@ -36,7 +36,7 @@ function cgroup {
 }
 
 function psandbox {
-  sysbench --mysql-socket=$PSANDBOX_MYSQL_DIR/mysqld.sock --mysql-db=test --tables=1 --table-size=100000 --threads=1 --time=113 --percentile=50 --report-interval=10 $SYSBEN_DIR/oltp_update_index.lua run &
+  sysbench --mysql-socket=$PSANDBOX_MYSQL_DIR/mysqld.sock --mysql-db=test --tables=1 --table-size=100000 --threads=1 --time=113 --percentile=95 --report-interval=10 $SYSBEN_DIR/oltp_update_index.lua run &
   sleep 8
   ./back.sh >> /dev/null &
   sleep 3
@@ -47,7 +47,7 @@ function psandbox {
 }
 
 function parties {
-  sysbench --mysql-socket=$PSANDBOX_MYSQL_DIR/mysqld.sock --mysql-db=test --tables=1 --table-size=100000 --threads=1 --time=120 --percentile=50 --report-interval=1 $SYSBEN_DIR/oltp_update_index.lua run >> $LOG_DIR/c4/front_1/parties.log &
+  sysbench --mysql-socket=$PSANDBOX_MYSQL_DIR/mysqld.sock --mysql-db=test --tables=1 --table-size=100000 --threads=1 --time=120 --percentile=95 --report-interval=1 $SYSBEN_DIR/oltp_update_index.lua run >> $LOG_DIR/c4/front_1/parties.log &
   sleep 1
   TLIST=$(ps -e -T | grep mysqld | awk '{print $2}' | sort -h | tail -1)
   for T in $TLIST; do (echo "$T") | sudo tee /sys/fs/cgroup/cpuset/hu_front_1/tasks; done
@@ -89,7 +89,7 @@ function side {
 }
 
 function interference {
-  sysbench --mysql-socket=$PSANDBOX_MYSQL_DIR/mysqld.sock --mysql-db=test --tables=1 --table-size=100000 --threads=1 --time=120 --percentile=50 --report-interval=10 $SYSBEN_DIR/oltp_update_index.lua  run &
+  sysbench --mysql-socket=$PSANDBOX_MYSQL_DIR/mysqld.sock --mysql-db=test --tables=1 --table-size=100000 --threads=1 --time=120 --percentile=95 --report-interval=10 $SYSBEN_DIR/oltp_update_index.lua  run &
   sleep 3
   ./back.sh >> /dev/null &
   sleep 13
@@ -100,7 +100,7 @@ function interference {
 }
 
 function no_interference {
-  sysbench --mysql-socket=$PSANDBOX_MYSQL_DIR/mysqld.sock --mysql-db=test --tables=1 --table-size=100000 --threads=1 --time=120 --percentile=50 --report-interval=10 $SYSBEN_DIR/oltp_update_index.lua  run &
+  sysbench --mysql-socket=$PSANDBOX_MYSQL_DIR/mysqld.sock --mysql-db=test --tables=1 --table-size=100000 --threads=1 --time=120 --percentile=95 --report-interval=10 $SYSBEN_DIR/oltp_update_index.lua  run &
   sleep 11
   echo "normal"
   sleep 90
