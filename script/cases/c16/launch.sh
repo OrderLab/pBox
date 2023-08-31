@@ -104,12 +104,6 @@ elif [[ $1 == 8 ]]; then
 elif [[ $1 == 9 ]]; then
   echo "run c16 psp"
   cp ../../libpsandbox.so $PSANDBOXDIR/build/libs/libpsandbox.so
-elif [[ $1 == 8 ]]; then
-  echo "run c16 retro"
-  cp ../../libretro.so $PSANDBOXDIR/build/libs/libpsandbox.so
-elif [[ $1 == 9 ]]; then
-  echo "run c16 psp"
-  cp ../../libpsandbox.so $PSANDBOXDIR/build/libs/libpsandbox.so
 fi
 
 mkdir -p  $LOG_DIR/c16
