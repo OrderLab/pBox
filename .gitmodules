@@ -4,3 +4,6 @@
 [submodule "psandbox-userlib"]
 	path = psandbox-userlib
 	url = https://github.com/OrderLab/psandbox-userlib.git
+[submodule "compiler"]
+	path = compiler
+	url = git@github.com:OrderLab/psandbox_compiler.git
